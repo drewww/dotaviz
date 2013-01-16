@@ -15,80 +15,16 @@
 		  width: 960px;
 		}
 	</style>
+	<!-- Data is here. -->
+	<script type="text/javascript" src="hero_picks.js"></script>
 	
+	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 
-		var dataObj = [
-			{
-				"name": "Meepo",
-				"values": [
-					{"x":0, "y": 1},
-					{"x":1, "y": 5},
-					{"x":2, "y": 10},
-					{"x":3, "y": 2},
-					{"x":4, "y": 3}
-				]
-			},
-			{
-				"name": "Pudge",
-				"values": [
-					{"x":0, "y": 2},
-					{"x":1, "y": 3},
-					{"x":2, "y": 0},
-					{"x":3, "y": 0},
-					{"x":4, "y": 1}
-				]
-			},
-			{
-				"name": "Doom",
-				"values": [
-					{"x":0, "y": 10},
-					{"x":1, "y": 12},
-					{"x":2, "y": 18},
-					{"x":3, "y": 10},
-					{"x":4, "y": 8}
-				]
-			},
-			{
-				"name": "Witch Doctor",
-				"values": [
-					{"x":0, "y": 2},
-					{"x":1, "y": 5},
-					{"x":2, "y": 1},
-					{"x":3, "y": 9},
-					{"x":4, "y": 2}
-				]
-			}
-		];
-		
-		var data = [
-					[{"x":0, "y": 1},
-						{"x":1, "y": 5},
-						{"x":2, "y": 10},
-						{"x":3, "y": 2},
-						{"x":4, "y": 3}],
-					[{"x":0, "y": 2},
-						{"x":1, "y": 3},
-						{"x":2, "y": 0},
-						{"x":3, "y": 0},
-						{"x":4, "y": 1}],
-					[{"x":0, "y": 10},
-						{"x":1, "y": 12},
-						{"x":2, "y": 18},
-						{"x":3, "y": 10},
-						{"x":4, "y": 8}],
-					[{"x":0, "y": 2},
-						{"x":1, "y": 5},
-						{"x":2, "y": 1},
-						{"x":3, "y": 9},
-						{"x":4, "y": 2}]
-		];
-
-		
 		
 		$("document").ready(function() {
 			
-			var numWeeks = 5;
+			var numWeeks = 22;
 			var width = 1000;
 			var height = 500;
 			
@@ -101,7 +37,7 @@
 				    .range([0, width]);
 
 				var y = d3.scale.linear()
-				    .domain([0, 50])
+				    .domain([0, 1800])
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
@@ -115,11 +51,8 @@
 			var stack = d3.layout.stack()
 				.offset("wiggle")
 				.values(function(d) { return d.values;})
-				// .values(function(d) {
-				// 	console.log("getting values on d: " + JSON.stringify(d));
-				// 	return d.values;});
 			
-			var layers = stack(dataObj);
+			var layers = stack(heroes);
 			
 			svg.selectAll("path")
 				.data(layers)
