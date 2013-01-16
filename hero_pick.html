@@ -20,14 +20,20 @@
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
-
+		var numWeeks = 22;
+		var width = 1000;
+		var height = 500;
+		
+		var showNormalized = true;
 		
 		$("document").ready(function() {
 			
-			var numWeeks = 22;
-			var width = 1000;
-			var height = 500;
+			generateNormalizedStack();
 			
+		});
+		
+		
+		function generateNormalizedStack() {
 			var svg = d3.select("body").append("svg")
 				.attr("width", width)
 				.attr("height", height);
@@ -50,7 +56,7 @@
 				
 			var stack = d3.layout.stack()
 				.offset("expand")
-				.values(function(d) { return d.values;})
+				.values(function(d) { return d.values;});
 			
 			var layers = stack(heroes);
 			
@@ -61,13 +67,9 @@
 					.style("fill", function() {return color(Math.random()); })
 					.append("title")
 					    .text(function(d) { return d.heroName; });
-			
-		});
-			
-		
+		}
 	</script>
 </head>
 <body id="hero_pick" onload="">
-	
 </body>
 </html>
