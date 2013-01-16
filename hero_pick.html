@@ -20,14 +20,20 @@
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
-
+		var numWeeks = 22;
+		var width = 1000;
+		var height = 500;
+		
+		var showNormalized = true;
 		
 		$("document").ready(function() {
 			
-			var numWeeks = 22;
-			var width = 1000;
-			var height = 500;
+			generateNormalizedStack();
 			
+		});
+		
+		
+		function generateNormalizedStack() {
 			var svg = d3.select("body").append("svg")
 				.attr("width", width)
 				.attr("height", height);
@@ -37,20 +43,20 @@
 				    .range([0, width]);
 
 				var y = d3.scale.linear()
-				    .domain([0, 1800])
+				    .domain([0, 1])
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
 				    .range(["#aad", "#556"]);
-
+						
 				var area = d3.svg.area()
 				    .x(function(d) { return x(d.x); })
 				    .y0(function(d) { return y(d.y0); })
 				    .y1(function(d) { return y(d.y0 + d.y); });
 				
 			var stack = d3.layout.stack()
-				.offset("wiggle")
-				.values(function(d) { return d.values;})
+				.offset("expand")
+				.values(function(d) { return d.values;});
 			
 			var layers = stack(heroes);
 			
@@ -61,13 +67,9 @@
 					.style("fill", function() {return color(Math.random()); })
 					.append("title")
 					    .text(function(d) { return d.heroName; });
-			
-		});
-			
-		
+		}
 	</script>
 </head>
 <body id="hero_pick" onload="">
-	
 </body>
 </html>
