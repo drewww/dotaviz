@@ -37,19 +37,19 @@
 				    .range([0, width]);
 
 				var y = d3.scale.linear()
-				    .domain([0, 1800])
+				    .domain([0, 1])
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
 				    .range(["#aad", "#556"]);
-
+						
 				var area = d3.svg.area()
 				    .x(function(d) { return x(d.x); })
 				    .y0(function(d) { return y(d.y0); })
 				    .y1(function(d) { return y(d.y0 + d.y); });
 				
 			var stack = d3.layout.stack()
-				.offset("wiggle")
+				.offset("expand")
 				.values(function(d) { return d.values;})
 			
 			var layers = stack(heroes);
