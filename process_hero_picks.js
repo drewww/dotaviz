@@ -13,7 +13,7 @@ function zeros(l) {
   var array = [];
   
   for(var i=0; i<l; i++) {
-    array.push(0);
+    array.push({x:i, y:0});
   }
   
   return array;
@@ -39,10 +39,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
     yearweeks[entry.yearweek] = true;
   });
   
-  
+  console.log("yearweeks: " + Object.keys(yearweeks).length);
   var numYearweeks = Object.keys(yearweeks).length;
-  
-  console.log("yearweeks: " + numYearweeks);
   
   var curYearweek = null;
   var yearweekIndex = 0;
@@ -65,18 +63,24 @@ fs.readFile('hero_picks.csv', function(err, data) {
       // update
       var heroObj = heroes[entry.heroName];
       
-      heroObj.values[yearweekIndex] = parseInt(entry.picks);
+      heroObj.values[yearweekIndex].y = parseInt(entry.picks);
     } else {
       var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks)};
       
-      heroObj.values[yearweekIndex] = parseInt(entry.picks);
+      heroObj.values[yearweekIndex].y = parseInt(entry.picks);
       
       heroes[entry.heroName] = heroObj;
     }
     
   });
   
-  console.log(JSON.stringify(heroes));
+  var heroesArray = [];
+  
+  _.each(heroes, function(value, key) {
+    heroesArray.push(value);
+  });
+  
+  fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
   
 });
 
