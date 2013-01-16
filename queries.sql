@@ -51,4 +51,12 @@ select * from basicstats join mymatch on mymatch.id=basicstats.id;
 select herodisp.hero_num, hero_name, count(*) as picks from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num group by hero_num order by picks desc;
 
 -- now group by date
-select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num join mymatch on mymatch.id=basicstats.id group by hero_num, yearweek order by yearweek asc, picks desc;
+select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek into outfile '/tmp/hero_picks.csv' FIELDS TERMINATED BY ',' ESCAPED BY '\\' LINES TERMINATED BY '\n' from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num join mymatch on mymatch.id=basicstats.id group by hero_num, yearweek order by yearweek asc, picks desc;
+
+-- the above query only has listings for heroes that were picked in that 
+-- week, so there are no 0s in the data. We need precisely the same
+-- number of data points per hero, so we need a complete list 
+
+
+
+
