@@ -5,9 +5,15 @@ var PNG = require('png-js'),
 var basePath = "hero_images/";
 var files = fs.readdirSync(basePath);
 
+var fd = fs.openSync("out.html", 'w');
+
+fs.writeSync(fd, "<html><body>");
+
 _.each(files, function(file) {
   
-  // load each file in.
+  
+  // if(file=="") return;
+  console.log("file: '" + file + "'");
   PNG.decode(basePath + file, function(pixels) {
     
     var parsedPixels = [];
@@ -18,22 +24,34 @@ _.each(files, function(file) {
         
       // deal with full alpha pixels
       if(pixels.readUInt8(pos+3)==0) {
-        newPixel = [0, 0, 0];
+        // skip this pixel and don't push it in; we only want pixels that
+        // actually have content.
+      } else {
+        
+        if(newPixel[0] + newPixel[1] + newPixel[2] > 255*3) {
+          // drop it.
+        } else {
+          parsedPixels.push(newPixel);
+        }
       }
       
       pos = pos + 4;
       
-      parsedPixels.push(newPixel);
     }
     
     var cmap = MMCQ.quantize(parsedPixels, 2);
     
-    console.log(file + ": " + JSON.stringify(cmap.palette()));
+     console.log(file + ": " + JSON.stringify(cmap.palette()));
+    fs.writeSync(fd, "<div style='float: left; padding: 5px; margin: 10px'><img src='hero_images/" + file + "'>");
+    
+    _.each(cmap.palette(), function(color) {
+      fs.writeSync(fd, "<div style='border: 1px solid #aaa; width: 20px; height: 20px; background-color: #" + color[0].toString(16) + color[1].toString(16) + color[2].toString(16) + ";'></div>");
+    });
+    
+    fs.writeSync(fd,"</div>\n");
   });
-  
-  
-  
 });
+
 
 
 
