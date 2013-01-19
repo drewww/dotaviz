@@ -7,13 +7,22 @@ var files = fs.readdirSync(basePath);
 
 var fd = fs.openSync("out.html", 'w');
 
+var out = {}
+
+
 fs.writeSync(fd, "<html><body>");
 
 _.each(files, function(file) {
   
   
   // if(file=="") return;
-  console.log("file: '" + file + "'");
+  
+  var heroColors = {};
+  var heroName = file.slice(0, file.length-9);
+  heroName = heroName.replace(/_/g, " ");
+  
+  out[heroName] = {colors:[]};
+  
   PNG.decode(basePath + file, function(pixels) {
     
     var parsedPixels = [];
@@ -47,16 +56,16 @@ _.each(files, function(file) {
     
     _.each(cmap.palette(), function(color) {
       
-      
-      console.log(JSON.stringify(color));
       color = _.map(color, i2h);
       
-      console.log("\t" + JSON.stringify(color));
+      out[heroName].colors.push("#" + color[0] + color[1] + color[2]);
       
       fs.writeSync(fd, "<div style='border: 1px solid #aaa; width: 20px; height: 20px; background-color: #" + color[0] + color[1] + color[2] + ";'></div>");
     });
     
     fs.writeSync(fd,"</div>\n");
+    
+    fs.writeFileSync("heroColors.json", JSON.stringify(out));
   });
 });
 
