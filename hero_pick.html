@@ -17,6 +17,7 @@
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
+	<script type="text/javascript" src="hero_colors.js"></script>
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
@@ -65,7 +66,10 @@
 				.data(layers)
 				.enter().append("path")
 					.attr("d", function(d) { return area(d.values)})
-					.style("fill", function() {return color(Math.random()); })
+					.style("fill", function(d) {
+						console.log(d.heroName + ": " + JSON.stringify(colors[d.heroName]));
+						return colors[d.heroName].colors[0];
+					})
 					.append("title")
 					    .text(function(d) { return d.heroName; });
 		}
