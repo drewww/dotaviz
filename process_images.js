@@ -44,8 +44,16 @@ _.each(files, function(file) {
      console.log(file + ": " + JSON.stringify(cmap.palette()));
     fs.writeSync(fd, "<div style='float: left; padding: 5px; margin: 10px'><img src='hero_images/" + file + "'>");
     
+    
     _.each(cmap.palette(), function(color) {
-      fs.writeSync(fd, "<div style='border: 1px solid #aaa; width: 20px; height: 20px; background-color: #" + color[0].toString(16) + color[1].toString(16) + color[2].toString(16) + ";'></div>");
+      
+      
+      console.log(JSON.stringify(color));
+      color = _.map(color, i2h);
+      
+      console.log("\t" + JSON.stringify(color));
+      
+      fs.writeSync(fd, "<div style='border: 1px solid #aaa; width: 20px; height: 20px; background-color: #" + color[0] + color[1] + color[2] + ";'></div>");
     });
     
     fs.writeSync(fd,"</div>\n");
@@ -53,8 +61,10 @@ _.each(files, function(file) {
 });
 
 
-
-
+// int2hex
+function i2h(int) {
+  return String("0" + int.toString(16)).slice(-2);
+}
 
 
 /*! 
