@@ -12,7 +12,7 @@
 		  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 		  margin: auto;
 		  position: relative;
-		  width: 960px;
+		  width: 1400px;
 		}
 	</style>
 	<!-- Data is here. -->
@@ -22,8 +22,8 @@
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 		var numWeeks = 22;
-		var width = 1000;
-		var height = 500;
+		var width = 1400;
+		var height = 800;
 		
 		var showNormalized = true;
 		
@@ -57,7 +57,9 @@
 				
 			var stack = d3.layout.stack()
 				.offset("expand")
-				.order("inside-out")
+				.order(function(data) {
+					return d3.range(data.length);
+				})
 				.values(function(d) { return d.values;});
 			
 			var layers = stack(heroes);

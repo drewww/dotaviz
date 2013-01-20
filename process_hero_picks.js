@@ -64,21 +64,28 @@ fs.readFile('hero_picks.csv', function(err, data) {
       var heroObj = heroes[entry.heroName];
       
       heroObj.values[yearweekIndex].y = parseInt(entry.picks);
+      heroes[entry.heroName].totalPicks = heroes[entry.heroName].totalPicks
+      + parseInt(entry.picks);
+      
     } else {
-      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks)};
+      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks)};
       
       heroObj.values[yearweekIndex].y = parseInt(entry.picks);
       
       heroes[entry.heroName] = heroObj;
     }
-    
   });
+  
   
   var heroesArray = [];
   
   _.each(heroes, function(value, key) {
-    heroesArray.push(value);
+    if(value.totalPicks > 30) {
+      heroesArray.push(value);
+    }
   });
+  
+  heroesArray = _.sortBy(heroesArray, "totalPicks");
   
   fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
   
