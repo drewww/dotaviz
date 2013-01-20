@@ -77,19 +77,43 @@
 			
 			var layers = stack(heroes);
 			
-			svg.selectAll("path")
+			var node = svg.selectAll("path")
 				.data(layers)
-				.enter().append("path")
-					.attr("d", function(d) { return area(d.values)})
-					.style("fill", function(d) {
-						// 1000 is the max GPM we've got on the DB at the moment, so
-						// averages will be well, well below that. 
-						return color((d.gpm-gpmRange[0])/gpmRange[1]);
-					})
-					.append("text")
-						.attr("dy", ".3em")
-					  .style("text-anchor", "middle")
-					  .text(function(d) { return d.heroName; });
+				.enter().append("g");
+
+			var path = svg.append("g")
+					.attr("class", "paths")
+					.selectAll("path")
+						.data(layers)
+					.enter().append("path")
+						.attr("d", function(d) { return area(d.values)})
+						.style("fill", function(d) {
+							// normalize based on what GPMs we see in the data
+							return color((d.gpm-gpmRange[0])/gpmRange[1]);
+						});
+			
+			var text = svg.append("g")
+					.attr("class", "hero-names")
+					.selectAll("text")
+						.data(layers)
+					.enter().append("text")
+							.attr("y", function(d) {
+								console.log(d.peakWeek);
+
+								console.log(d.values[d.peakWeek].y);
+								return y(d.values[d.peakWeek].y);
+							})
+							.attr("x", function(d) {
+								return x(d.peakWeek);
+							})
+						  .text(function(d) { return d.heroName; });
+
+			// node.append("path").attr("d", function(d) { return area(d.values)})
+			// 		.style("fill", function(d) {
+			// 			// normalize based on what GPMs we see in the data
+			// 			return color((d.gpm-gpmRange[0])/gpmRange[1]);
+			// 		});
+					
 		}
 	</script>
 </head>

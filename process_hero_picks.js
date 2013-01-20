@@ -80,11 +80,11 @@ fs.readFile('hero_picks.csv', function(err, data) {
 
       if(parseInt(entry.picks) > heroObj.maxPicks) {
         heroObj.maxPicks = parseInt(entry.picks);
-        heroObj.peakWeek = curYearweek;
+        heroObj.peakWeek = yearweekIndex;
       }
       
     } else {
-      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks), "gpm":0, "kills":0, "deaths":0, "assists":0, "maxPicks":parseInt(entry.picks), "peakWeek":curYearweek};
+      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks), "gpm":0, "kills":0, "deaths":0, "assists":0, "maxPicks":parseInt(entry.picks), "peakWeek":yearweekIndex};
       
       heroObj.values[yearweekIndex].y = parseInt(entry.picks);
       
