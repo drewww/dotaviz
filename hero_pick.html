@@ -15,6 +15,12 @@
 		  position: relative;
 		  width: 1400px;
 		}
+		
+		text {
+		  font: 10px sans-serif;
+			color: white;
+		}
+		
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -49,7 +55,7 @@
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
-				    .range(["#aad", "#556"]);
+				    .range(["#131", "#cfc"]);
 						
 				var area = d3.svg.area()
 				    .x(function(d) { return x(d.x); })
@@ -80,8 +86,10 @@
 						// averages will be well, well below that. 
 						return color((d.gpm-gpmRange[0])/gpmRange[1]);
 					})
-					.append("title")
-					    .text(function(d) { return d.heroName; });
+					.append("text")
+						.attr("dy", ".3em")
+					  .style("text-anchor", "middle")
+					  .text(function(d) { return d.heroName; });
 		}
 	</script>
 </head>
