@@ -30,8 +30,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
     var pieces = line.split(",");
     
     var entry = {"heroId":pieces[0], "heroName":pieces[1], "picks":pieces[2],
-      "yearweek":pieces[3]};
-      
+      "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8])};
+    
     entries.push(entry);
     
     // this will collide a bunch, but then the number of keys will tell us
@@ -73,8 +73,14 @@ fs.readFile('hero_picks.csv', function(err, data) {
       heroes[entry.heroName].totalPicks = heroes[entry.heroName].totalPicks
       + parseInt(entry.picks);
       
+      heroes[entry.heroName].gpm = heroes[entry.heroName].gpm + entry.gpm;
+      heroes[entry.heroName].kills = heroes[entry.heroName].kills + entry.kills;
+      heroes[entry.heroName].deaths = heroes[entry.heroName].deaths + entry.deaths;
+      heroes[entry.heroName].assists = heroes[entry.heroName].assists + entry.assists;
+
+      
     } else {
-      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks)};
+      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks), "gpm":0, "kills":0, "deaths":0, "assists":0};
       
       heroObj.values[yearweekIndex].y = parseInt(entry.picks);
       
@@ -87,6 +93,12 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   _.each(heroes, function(value, key) {
     if(value.totalPicks > 40) {
+      
+      value.gpm = value.gpm / value.totalPicks;
+      value.kills = value.kills / value.totalPicks;
+      value.deaths = value.deaths / value.totalPicks;
+      value.assists = value.assists / value.totalPicks;
+      
       heroesArray.push(value);
     }
   });

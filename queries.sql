@@ -51,12 +51,15 @@ select * from basicstats join mymatch on mymatch.id=basicstats.id;
 select herodisp.hero_num, hero_name, count(*) as picks from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num group by hero_num order by picks desc;
 
 -- now group by date
-select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek into outfile '/tmp/hero_picks.csv' FIELDS TERMINATED BY ','LINES TERMINATED BY '\n' from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num join mymatch on mymatch.id=basicstats.id group by hero_num, yearweek order by yearweek asc, picks desc;
+select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek, sum(gpm) as gpm, role, sum(kills), sum(deaths), sum(assists) into outfile '/tmp/hero_picks.csv' FIELDS TERMINATED BY ','LINES TERMINATED BY '\n' from basicstats join herodisp on basicstats.hero_num = herodisp.hero_num join mymatch on mymatch.id=basicstats.id group by hero_num, yearweek order by yearweek asc, picks desc;
 
 -- the above query only has listings for heroes that were picked in that 
 -- week, so there are no 0s in the data. We need precisely the same
 -- number of data points per hero, so we need a complete list 
 
 
+-- shows the hero/role mapping
+select basicstats.hero_num, hero_name, role from basicstats join herodisp on herodisp.hero_num = basicstats.hero_num group by hero_num
 
-
+-- shows hero/role mapping with added GPM bonus, sorted by gpm to show how it lines up
+select basicstats.hero_num, hero_name, avg(gpm) as avg_gpm, role from basicstats join herodisp on herodisp.hero_num = basicstats.hero_num group by hero_num order by avg_gpm
