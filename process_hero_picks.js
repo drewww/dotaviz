@@ -103,7 +103,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     }
   });
   
-  heroesArray = _.sortBy(heroesArray, "totalPicks");
+  heroesArray = _.sortBy(heroesArray, "gpm");
   
   fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
   
