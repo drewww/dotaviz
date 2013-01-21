@@ -121,9 +121,9 @@
 								var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
 								var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
 								
-								// var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
-								// (secondPoints[0].y + secondPoints[1].y)/2];
-								var centerPointsY = [firstPoints[0].y, secondPoints[0].y];
+								var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
+								(secondPoints[0].y + secondPoints[1].y)/2];
+								// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
 								
 								console.log(d.heroName);
 								console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
