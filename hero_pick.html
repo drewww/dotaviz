@@ -87,6 +87,9 @@
 						.data(layers)
 					.enter().append("path")
 						.attr("d", function(d) { return area(d.values)})
+						.attr("id", function(d) {
+							return "hero-" + d.heroId;
+						})
 						.style("fill", function(d) {
 							// normalize based on what GPMs we see in the data
 							return color((d.gpm-gpmRange[0])/gpmRange[1]);
@@ -98,10 +101,14 @@
 						.data(layers)
 					.enter().append("text")
 							.attr("y", function(d) {
-								console.log(d.peakWeek);
-
-								console.log(d.values[d.peakWeek].y);
-								return y(d.values[d.peakWeek].y);
+								// okay shit is going to get real here.
+								// pull the path object from SVG
+								var path = document.getElementById("hero-" + d.heroId);
+								
+								// now get the points
+								var segs = path.pathSegList;
+								
+								return moveSeg = segs.getItem(1 + d.peakWeek).y
 							})
 							.attr("x", function(d) {
 								return x(d.peakWeek);
