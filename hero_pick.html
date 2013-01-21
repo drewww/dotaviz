@@ -6,23 +6,31 @@
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="http://underscorejs.org/underscore-min.js"></script>
 	
 	<style type="text/css" media="screen">
 		body {
 		  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 		  margin: auto;
 		  position: relative;
-		  width: 960px;
+		  width: 1400px;
 		}
+		
+		text {
+		  font: 10px sans-serif;
+			color: white;
+		}
+		
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
+	<script type="text/javascript" src="hero_colors.js"></script>
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 		var numWeeks = 22;
-		var width = 1000;
-		var height = 500;
+		var width = 1400;
+		var height = 800;
 		
 		var showNormalized = true;
 		
@@ -47,26 +55,119 @@
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
-				    .range(["#aad", "#556"]);
+				    .range(["#131", "#cfc"]);
 						
 				var area = d3.svg.area()
 				    .x(function(d) { return x(d.x); })
 				    .y0(function(d) { return y(d.y0); })
 				    .y1(function(d) { return y(d.y0 + d.y); });
 				
+				var gpmRange = [1000, 0];
+				_.each(heroes, function(hero) {
+					if(hero.gpm < gpmRange[0]) gpmRange[0] = hero.gpm;
+					if(hero.gpm > gpmRange[1]) gpmRange[1] = hero.gpm;
+				});
+				
 			var stack = d3.layout.stack()
 				.offset("expand")
+				.order(function(data) {
+					return d3.range(data.length);
+				})
 				.values(function(d) { return d.values;});
 			
 			var layers = stack(heroes);
 			
-			svg.selectAll("path")
+			var node = svg.selectAll("path")
 				.data(layers)
-				.enter().append("path")
-					.attr("d", function(d) { return area(d.values)})
-					.style("fill", function() {return color(Math.random()); })
-					.append("title")
-					    .text(function(d) { return d.heroName; });
+				.enter().append("g");
+
+			var path = svg.append("g")
+					.attr("class", "paths")
+					.selectAll("path")
+						.data(layers)
+					.enter().append("path")
+						.attr("d", function(d) { return area(d.values)})
+						.attr("id", function(d) {
+							return "hero-" + d.heroId;
+						})
+						.style("fill", function(d) {
+							// normalize based on what GPMs we see in the data
+							return color((d.gpm-gpmRange[0])/gpmRange[1]);
+						});
+			
+			
+			var textY = function(d) {
+					var points = getPathPointsForWeek(d.heroId, d.peakWeek);
+					
+					var width =  points[1].y - points[0].y;
+					
+					// get the position of the upper line (extract from the raw
+					// path listing, shifted by one because the first seg is
+					// always an absolute move command) and then add on half
+					// the width of the bar at that point.
+					return points[0].y + width/2 + 3;
+			}
+			
+			var text = svg.append("g")
+					.attr("class", "hero-names")
+					.selectAll("text")
+						.data(layers)
+					.enter().append("text")
+							.attr("y", textY)
+							.attr("x", function(d) {
+								return x(d.peakWeek);
+							})
+							.attr("transform", function(d) {
+								var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
+								var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
+								
+								var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
+								(secondPoints[0].y + secondPoints[1].y)/2];
+								// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
+								
+								console.log(d.heroName);
+								console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
+								console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
+								
+								var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
+								
+								// angle = angle*-1;
+								
+								// console.log("angle: " + angle);
+								// return "rotate(" + angle/Math.PI*180 + ")";
+								// return angle/Math.PI*180;
+								
+								// angle = 10;
+								return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
+								// console.log("angle: " + angle);
+								
+								return "";
+							})
+						  .text(function(d) { return d.heroName; });
+						
+		}
+		
+		function getPathPointsForWeek(heroId, week) {
+			// okay shit is going to get real here.
+			// pull the path object from SVG
+			var path = document.getElementById("hero-" + heroId);
+			
+			// now get the points
+			var segs = path.pathSegList;
+			
+			var upperPoint = segs.getItem(week);
+			// lower point will be the only other one with the same x
+			var lowerPoint;
+			
+			// start at one beyond the upper point's index
+			for(var i=week+1; i<segs.numberOfItems; i++) {
+				if(segs.getItem(i).x==upperPoint.x) {
+					lowerPoint = segs.getItem(i);
+					break;
+				}
+			}
+			
+			return [upperPoint, lowerPoint];
 		}
 	</script>
 </head>
