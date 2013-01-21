@@ -95,25 +95,53 @@
 							return color((d.gpm-gpmRange[0])/gpmRange[1]);
 						});
 			
+			
+			var textY = function(d) {
+					var points = getPathPointsForWeek(d.heroId, d.peakWeek);
+					
+					var width =  points[1].y - points[0].y;
+					
+					// get the position of the upper line (extract from the raw
+					// path listing, shifted by one because the first seg is
+					// always an absolute move command) and then add on half
+					// the width of the bar at that point.
+					return points[0].y + width/2 + 3;
+			}
+			
 			var text = svg.append("g")
 					.attr("class", "hero-names")
 					.selectAll("text")
 						.data(layers)
 					.enter().append("text")
-							.attr("y", function(d) {
-								var points = getPathPointsForWeek(d.heroId, d.peakWeek);
-								
-								var width =  points[1].y - points[0].y;
-								
-								// get the position of the upper line (extract from the raw
-								// path listing, shifted by one because the first seg is
-								// always an absolute move command) and then add on half
-								// the width of the bar at that point.
-								return points[0].y + width/2;
-								// return points[0].y;
-							})
+							.attr("y", textY)
 							.attr("x", function(d) {
-								return x(d.peakWeek+1);
+								return x(d.peakWeek);
+							})
+							.attr("transform", function(d) {
+								var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
+								var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
+								
+								// var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
+								// (secondPoints[0].y + secondPoints[1].y)/2];
+								var centerPointsY = [firstPoints[0].y, secondPoints[0].y];
+								
+								console.log(d.heroName);
+								console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
+								console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
+								
+								var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
+								
+								// angle = angle*-1;
+								
+								// console.log("angle: " + angle);
+								// return "rotate(" + angle/Math.PI*180 + ")";
+								// return angle/Math.PI*180;
+								
+								// angle = 10;
+								return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
+								// console.log("angle: " + angle);
+								
+								return "";
 							})
 						  .text(function(d) { return d.heroName; });
 						
@@ -127,12 +155,12 @@
 			// now get the points
 			var segs = path.pathSegList;
 			
-			var upperPoint = segs.getItem(1+week);
+			var upperPoint = segs.getItem(week);
 			// lower point will be the only other one with the same x
 			var lowerPoint;
 			
 			// start at one beyond the upper point's index
-			for(var i=1+week+1; i<segs.numberOfItems; i++) {
+			for(var i=week+1; i<segs.numberOfItems; i++) {
 				if(segs.getItem(i).x==upperPoint.x) {
 					lowerPoint = segs.getItem(i);
 					break;
