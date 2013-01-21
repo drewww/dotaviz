@@ -101,26 +101,45 @@
 						.data(layers)
 					.enter().append("text")
 							.attr("y", function(d) {
-								// okay shit is going to get real here.
-								// pull the path object from SVG
-								var path = document.getElementById("hero-" + d.heroId);
+								var points = getPathPointsForWeek(d.heroId, d.peakWeek);
 								
-								// now get the points
-								var segs = path.pathSegList;
+								var width =  points[1].y - points[0].y;
 								
-								return moveSeg = segs.getItem(1 + d.peakWeek).y
+								// get the position of the upper line (extract from the raw
+								// path listing, shifted by one because the first seg is
+								// always an absolute move command) and then add on half
+								// the width of the bar at that point.
+								return points[0].y + width/2;
+								// return points[0].y;
 							})
 							.attr("x", function(d) {
-								return x(d.peakWeek);
+								return x(d.peakWeek+1);
 							})
 						  .text(function(d) { return d.heroName; });
-
-			// node.append("path").attr("d", function(d) { return area(d.values)})
-			// 		.style("fill", function(d) {
-			// 			// normalize based on what GPMs we see in the data
-			// 			return color((d.gpm-gpmRange[0])/gpmRange[1]);
-			// 		});
-					
+						
+		}
+		
+		function getPathPointsForWeek(heroId, week) {
+			// okay shit is going to get real here.
+			// pull the path object from SVG
+			var path = document.getElementById("hero-" + heroId);
+			
+			// now get the points
+			var segs = path.pathSegList;
+			
+			var upperPoint = segs.getItem(1+week);
+			// lower point will be the only other one with the same x
+			var lowerPoint;
+			
+			// start at one beyond the upper point's index
+			for(var i=1+week+1; i<segs.numberOfItems; i++) {
+				if(segs.getItem(i).x==upperPoint.x) {
+					lowerPoint = segs.getItem(i);
+					break;
+				}
+			}
+			
+			return [upperPoint, lowerPoint];
 		}
 	</script>
 </head>
