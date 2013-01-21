@@ -120,7 +120,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
   
-  fs.writeFileSync('yearweeks.js', "var yaerweeks = " + JSON.stringify(yearWeekMetadata));
+  fs.writeFileSync('yearweeks.js', "var yearweeks = " + JSON.stringify(yearWeekMetadata));
   
 });
 

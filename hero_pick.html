@@ -24,7 +24,7 @@
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
-	<script type="text/javascript" src="hero_colors.js"></script>
+	<script type="text/javascript" src="yearweeks.js"></script>
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
@@ -32,14 +32,72 @@
 		var width = 1000;
 		var height = 700;
 		
+		var matchFrequencyHeight = 100;
+		
 		var showNormalized = true;
 		
 		$("document").ready(function() {
 			
-			generateNormalizedStack();
+			// generateNormalizedStack();
+			generateMatchHistogram();
 			
 		});
 		
+		
+		function generateMatchHistogram() {
+			
+			
+			var maxPicks = 0;
+			
+			_.each(yearweeks, function(yearweek) {
+				if(yearweek.totalPicks > maxPicks) maxPicks = yearweek.totalPicks;
+			});
+			
+			var svg = d3.select("body").append("svg")
+				.attr("width", width)
+				.attr("height", matchFrequencyHeight);
+				
+			var x = d3.scale.ordinal()
+				.rangeBands([0, width], 0)
+				.domain(_.pluck(yearweeks, "yearWeek"));
+
+			
+			var y = d3.scale.linear()
+				.domain([0, maxPicks])
+				.range([matchFrequencyHeight, 0]);
+				
+			// var xAxis = d3.svg.axis()
+			// 	.scale(x)
+			// 	.orient("bottom");
+			
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.orient("left");
+				
+			// svg.append("g")
+			// 	.attr("class", "x axis")
+			// 	.attr("transform", "translate(0,"+matchFrequencyHeight+")")
+			// 	.call(xAxis);
+
+			svg.append("g")
+				.attr("class", "y axis")
+				// .attr("transform", "translate(0,"+matchFrequencyHeight+")")
+				.call(yAxis);
+				
+			svg.selectAll(".bar")
+						.data(yearweeks)
+					.enter().append("rect")
+						.attr("class", "bar")
+						.attr("x", function(d) {
+							console.log(d.yearWeek + " " + x(d.yearWeek));
+							return x(d.yearWeek)
+						})
+						.attr("width", x.rangeBand())
+						.attr("y", function(d) { return y(d.totalPicks);})
+						.attr("height", function(d) { return matchFrequencyHeight - y(d.totalPicks);});
+			
+			
+		}
 		
 		function generateNormalizedStack() {
 			var svg = d3.select("body").append("svg")
