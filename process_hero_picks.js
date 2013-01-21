@@ -8,6 +8,9 @@ var entries = [];
 var yearweeks = {};
 
 var heroes = {};
+var yearWeekMetadata = [];
+
+var totalPicksInYearWeek = 0;
 
 function zeros(l) {
   var array = [];
@@ -57,6 +60,11 @@ fs.readFile('hero_picks.csv', function(err, data) {
       
     } else {
       if(curYearweek!=entry.yearweek) {
+        
+        // save some data in the yearWeeks accumulator
+        yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek});
+        
+        totalPicksInYearWeek = 0;
         yearweekIndex++;
         curYearweek = entry.yearweek;
         console.log("new yearweek: " + entry.yearweek);
@@ -64,6 +72,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     }
     
     
+    totalPicksInYearWeek += parseInt(entry.picks);
     
     if(entry.heroName in heroes) {
       // update
@@ -110,6 +119,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
   heroesArray = _.sortBy(heroesArray, "gpm");
   
   fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
+  
+  fs.writeFileSync('yearweeks.js', "var yaerweeks = " + JSON.stringify(yearWeekMetadata));
   
 });
 
