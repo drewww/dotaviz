@@ -32,7 +32,6 @@
 		  fill: steelblue;
 		}
 		
-		
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -40,9 +39,11 @@
 	
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
+	
+		var margin = {top: 0, right: 20, bottom: 10, left: 50};
+		var globalWidth = 1000;
+	
 		var numWeeks = 22;
-		var width = 1000;
-		var height = 700;
 		
 		var matchFrequencyHeight = 100;
 		
@@ -50,7 +51,7 @@
 		
 		$("document").ready(function() {
 			
-			// generateNormalizedStack();
+			generateNormalizedStack();
 			generateMatchHistogram();
 			
 		});
@@ -58,8 +59,7 @@
 		
 		function generateMatchHistogram() {
 			
-			var margin = {top: 0, right: 20, bottom: 10, left: 40},
-			    histogramWidth = width - margin.left - margin.right,
+			var histogramWidth = globalWidth - margin.left - margin.right,
 			    histogramHeight = 100 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
@@ -113,13 +113,21 @@
 		}
 		
 		function generateNormalizedStack() {
+			
+			var width = globalWidth - margin.left - margin.right;
+			var height = 700 - margin.top - margin.bottom;
+			
+			
 			var svg = d3.select("body").append("svg")
-				.attr("width", width)
-				.attr("height", height);
+					.attr("width", width + margin.left + margin.right)
+					.attr("height", height + margin.top + margin.bottom)
+				.append("g")
+				 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
 				
 				var x = d3.scale.linear()
 				    .domain([0, numWeeks - 1])
-				    .range([0, width]);
+				    .range([0, globalWidth - margin.right]);
 
 				var y = d3.scale.linear()
 				    .domain([0, 1])
