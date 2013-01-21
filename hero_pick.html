@@ -79,22 +79,21 @@
 				.domain([0, maxPicks])
 				.range([histogramHeight, 0]);
 				
-			// var xAxis = d3.svg.axis()
-			// 	.scale(x)
-			// 	.orient("bottom");
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.orient("bottom");
 			
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.orient("left");
 				
-			// svg.append("g")
-			// 	.attr("class", "x axis")
-			// 	.attr("transform", "translate(0,"+matchFrequencyHeight+")")
-			// 	.call(xAxis);
+			svg.append("g")
+				.attr("class", "x axis")
+				.attr("transform", "translate(0,"+matchFrequencyHeight+")")
+				.call(xAxis);
 
 			svg.append("g")
 				.attr("class", "y axis")
-				// .attr("transform", "translate(0,"+matchFrequencyHeight+")")
 				.call(yAxis);
 				
 			svg.selectAll(".bar")
@@ -172,6 +171,18 @@
 						.style("fill", function(d) {
 							// normalize based on what GPMs we see in the data
 							return color((d.gpm-gpmRange[0])/gpmRange[1]);
+						})
+						.on("mouseover", function(d) {
+							console.log("mouseover");
+							var path = d3.select(this);
+							
+							path.style("fill", "white");
+						})
+						.on("mouseout", function(d) {
+							var path = d3.select(this);
+							console.log("d: " + JSON.stringify(d));
+							console.log("MOUSE OUT");
+							path.style("fill", color((d.gpm-gpmRange[0])/gpmRange[1]));
 						});
 			
 			
@@ -223,7 +234,6 @@
 								return "";
 							})
 						  .text(function(d) { return d.heroName; });
-						
 		}
 		
 		function getPathPointsForWeek(heroId, week) {
