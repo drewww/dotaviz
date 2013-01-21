@@ -21,6 +21,18 @@
 			color: white;
 		}
 		
+		.axis path,
+		.axis line {
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+
+		.bar {
+		  fill: steelblue;
+		}
+		
+		
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -46,25 +58,26 @@
 		
 		function generateMatchHistogram() {
 			
+			var margin = {top: 0, right: 20, bottom: 10, left: 40},
+			    histogramWidth = width - margin.left - margin.right,
+			    histogramHeight = 100 - margin.top - margin.bottom;
 			
-			var maxPicks = 0;
-			
-			_.each(yearweeks, function(yearweek) {
-				if(yearweek.totalPicks > maxPicks) maxPicks = yearweek.totalPicks;
-			});
+			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
 			
 			var svg = d3.select("body").append("svg")
-				.attr("width", width)
-				.attr("height", matchFrequencyHeight);
+				.attr("width", histogramWidth + margin.left + margin.right)
+				.attr("height", histogramHeight + margin.top + margin.bottom)
+			.append("g")
+			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 			var x = d3.scale.ordinal()
-				.rangeBands([0, width], 0)
+				.rangeBands([0, histogramWidth], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
 
 			
 			var y = d3.scale.linear()
 				.domain([0, maxPicks])
-				.range([matchFrequencyHeight, 0]);
+				.range([histogramHeight, 0]);
 				
 			// var xAxis = d3.svg.axis()
 			// 	.scale(x)
@@ -93,8 +106,8 @@
 							return x(d.yearWeek)
 						})
 						.attr("width", x.rangeBand())
-						.attr("y", function(d) { return y(d.totalPicks);})
-						.attr("height", function(d) { return matchFrequencyHeight - y(d.totalPicks);});
+						.attr("y", function(d) { return y(d.totalPicks/10);})
+						.attr("height", function(d) { return histogramHeight - y(d.totalPicks/10);});
 			
 			
 		}
