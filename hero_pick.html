@@ -151,11 +151,30 @@
 			_.each(heroes, function(hero) {
 				var peakWidth = 0;
 				var index = 0;
+				var justSetPeakWidth = false;
 				_.each(hero.values, function(value) {
+					
+					
+					// this is a weird exception for morphling, where he goes to zero
+					// the week after his peak, which ruins the algorithm. Shift his
+					// peak week back a bit. But make sure you don't do this for heroes
+					// on the left edge. 
+					if(justSetPeakWidth) {
+						
+						if(value.y==0 && index>1) {
+							hero.peakWeek = hero.peakWeek-1;
+						}
+						
+						justSetPeakWidth = false;
+					}
+					
 					if(value.y > peakWidth) {
 						hero.peakWeek = index;
 						hero.peakWeekFixed = true;
 						peakWidth = value.y;
+						
+						// do a check to see if the next width is zero
+						justSetPeakWidth = true;
 					}
 					
 					index++;
