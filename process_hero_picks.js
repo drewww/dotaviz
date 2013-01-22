@@ -108,7 +108,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   var heroesArray = [];
   
-  var otherHero = {names:[], values:zeroes(numYearweeks), heroesPicked:{}};
+  var otherHero = {names:[], values:zeros(numYearweeks), heroesPicked:{}};
   
   _.each(heroes, function(value, key) {
     if(value.totalPicks > 40) {
@@ -122,12 +122,18 @@ fs.readFile('hero_picks.csv', function(err, data) {
     } else {
       otherHero.names.push(value.heroName);
       
+      var i=0;
+      _.each(value.values, function(picks) {
+        otherHero.values[i].y += picks.y;
+        i++;
+      });
     }
   });
   
   heroesArray = _.sortBy(heroesArray, "gpm");
   
-  fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray));
+  
+  fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray) + "; var others = " + JSON.stringify(otherHero));
   
   fs.writeFileSync('yearweeks.js', "var yearweeks = " + JSON.stringify(yearWeekMetadata));
   
