@@ -43,7 +43,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
   });
   
   console.log("yearweeks: " + Object.keys(yearweeks).length);
-  var numYearweeks = Object.keys(yearweeks).length-1;
+  console.log("yearweeks: " + JSON.stringify(Object.keys(yearweeks)));
+  var numYearweeks = Object.keys(yearweeks).length-2;
   
   var curYearweek = null;
   var yearweekIndex = 0;
@@ -57,7 +58,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     
     if(_.isNull(curYearweek)) {
       curYearweek = entry.yearweek;
-      
+      console.log("setting initial yearweek: " + curYearweek);
     } else {
       if(curYearweek!=entry.yearweek) {
         
@@ -100,6 +101,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
       heroes[entry.heroName] = heroObj;
     }
   });
+  
+  yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek});
   
   
   var heroesArray = [];

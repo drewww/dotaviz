@@ -28,8 +28,10 @@
 		  shape-rendering: crispEdges;
 		}
 
-		.bar {
-		  fill: steelblue;
+		.line {
+		  stroke: #aaa;
+			fill: none;
+			stroke-width: 2px;
 		}
 		
 	</style>
@@ -50,12 +52,9 @@
 		var showNormalized = true;
 		
 		$("document").ready(function() {
-			
 			generateNormalizedStack();
 			generateMatchHistogram();
-			
 		});
-		
 		
 		function generateMatchHistogram() {
 			
@@ -73,7 +72,6 @@
 			var x = d3.scale.ordinal()
 				.rangeBands([0, histogramWidth], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
-
 			
 			var y = d3.scale.linear()
 				.domain([0, maxPicks])
@@ -95,20 +93,15 @@
 			svg.append("g")
 				.attr("class", "y axis")
 				.call(yAxis);
-				
-			svg.selectAll(".bar")
-						.data(yearweeks)
-					.enter().append("rect")
-						.attr("class", "bar")
-						.attr("x", function(d) {
-							console.log(d.yearWeek + " " + x(d.yearWeek));
-							return x(d.yearWeek)
-						})
-						.attr("width", x.rangeBand())
-						.attr("y", function(d) { return y(d.totalPicks/10);})
-						.attr("height", function(d) { return histogramHeight - y(d.totalPicks/10);});
 			
+			var line = d3.svg.line()
+						.x(function(d) {return x(d.yearWeek);})
+						.y(function(d) {return y(d.totalPicks/10)});
 			
+			svg.append("path")
+						.datum(yearweeks)
+						.attr("class", "line")
+						.attr("d", line);
 		}
 		
 		function generateNormalizedStack() {
@@ -173,15 +166,12 @@
 							return color((d.gpm-gpmRange[0])/gpmRange[1]);
 						})
 						.on("mouseover", function(d) {
-							console.log("mouseover");
 							var path = d3.select(this);
 							
-							path.style("fill", "white");
+							path.style("fill", "#bbb");
 						})
 						.on("mouseout", function(d) {
 							var path = d3.select(this);
-							console.log("d: " + JSON.stringify(d));
-							console.log("MOUSE OUT");
 							path.style("fill", color((d.gpm-gpmRange[0])/gpmRange[1]));
 						});
 			
