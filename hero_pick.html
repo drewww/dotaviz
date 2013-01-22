@@ -23,7 +23,7 @@
 
 		text.selected {
 			font-weight: bold;
-			font-size: 14px;
+/*			font-size: 14px;*/
 		}
 
 		
@@ -178,7 +178,7 @@
 			var width = globalWidth - margin.left - margin.right;
 			var height = 700 - margin.top - margin.bottom;
 			
-			var gpmRangeColors = ["#131", "#cfc"];
+			var gpmRangeColors = ["#4B7A45", "#efe"];
 			
 			var svg = d3.select("#charts").append("svg")
 					.attr("width", width + margin.left + margin.right)
@@ -311,7 +311,7 @@
 			var colorHero = function(d) {
 				
 				if("isOtherHero" in d) {
-					return "#666";
+					return "#999";
 				}
 				
 				// normalize based on what GPMs we see in the data
