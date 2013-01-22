@@ -148,6 +148,20 @@
 			
 			var layers = stack(heroes);
 			
+			_.each(heroes, function(hero) {
+				var peakWidth = 0;
+				var index = 0;
+				_.each(hero.values, function(value) {
+					if(value.y > peakWidth) {
+						hero.peakWeek = index;
+						hero.peakWeekFixed = true;
+						peakWidth = value.y;
+					}
+					
+					index++;
+				});
+			});
+			
 			var node = svg.selectAll("path")
 				.data(layers)
 				.enter().append("g");
@@ -168,7 +182,7 @@
 						.on("mouseover", function(d) {
 							var path = d3.select(this);
 							
-							path.style("fill", "#bbb");
+							path.style("fill", "#ddd");
 						})
 						.on("mouseout", function(d) {
 							var path = d3.select(this);
@@ -198,30 +212,36 @@
 								return x(d.peakWeek);
 							})
 							.attr("transform", function(d) {
-								var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
-								var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
+								// check to see if the peak week is at the start or end of the
+								// set.
+								console.log(d.peakWeek);
+								if(d.peakWeek==0) {
+									return "";
+								} else if (d.peakWeek>=(numWeeks-3)) {
+									return "";
+								} else {
+									var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
+									var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
 								
-								var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
-								(secondPoints[0].y + secondPoints[1].y)/2];
-								// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
+									var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
+									(secondPoints[0].y + secondPoints[1].y)/2];
+									// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
 								
-								console.log(d.heroName);
-								console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
-								console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
+									console.log(d.heroName);
+									console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
+									console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
 								
-								var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
+									var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
 								
-								// angle = angle*-1;
+									// angle = angle*-1;
 								
-								// console.log("angle: " + angle);
-								// return "rotate(" + angle/Math.PI*180 + ")";
-								// return angle/Math.PI*180;
+									// console.log("angle: " + angle);
+									// return "rotate(" + angle/Math.PI*180 + ")";
+									// return angle/Math.PI*180;
 								
-								// angle = 10;
-								return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
-								// console.log("angle: " + angle);
-								
-								return "";
+									// angle = 10;
+									return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
+								}
 							})
 						  .text(function(d) { return d.heroName; });
 		}

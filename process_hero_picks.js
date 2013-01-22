@@ -87,7 +87,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
       heroes[entry.heroName].kills = heroes[entry.heroName].kills + entry.kills;
       heroes[entry.heroName].deaths = heroes[entry.heroName].deaths + entry.deaths;
       heroes[entry.heroName].assists = heroes[entry.heroName].assists + entry.assists;
-
+      
+      console.log(JSON.stringify(heroObj));
       if(parseInt(entry.picks) > heroObj.maxPicks) {
         heroObj.maxPicks = parseInt(entry.picks);
         heroObj.peakWeek = yearweekIndex;
