@@ -136,8 +136,9 @@
 			
 			var svg = d3.select("body").append("svg")
 					.attr("width", width + margin.left + margin.right)
-					.attr("height", height + margin.top + margin.bottom)
-				.append("g")
+					.attr("height", height + margin.top + margin.bottom);
+					
+			svg.append("g")
 				 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				
@@ -262,7 +263,24 @@
 							.attr("text-anchor", "end")
 							.text((gpmRange[0]+"").slice(0, 3) + " GPM")
 							
-							
+			
+			var mouseoverHero = function(id) {
+				console.log(id);
+				var path = svg.select("path#hero-" + id);
+				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
+
+				path.style("fill", "#ddd");
+			}
+			
+			var mouseoutHero = function(id) {
+				var path = svg.select("path#hero-" + id);
+				
+				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
+				
+				path.style("fill", color((d.gpm-gpmRange[0])/gpmRange[1]));
+			}
+			
+			
 			var path = svg.append("g")
 					.attr("class", "paths")
 					.selectAll("path")
@@ -277,13 +295,10 @@
 							return color((d.gpm-gpmRange[0])/gpmRange[1]);
 						})
 						.on("mouseover", function(d) {
-							var path = d3.select(this);
-							
-							path.style("fill", "#ddd");
+							mouseoverHero(d.heroId);
 						})
 						.on("mouseout", function(d) {
-							var path = d3.select(this);
-							path.style("fill", color((d.gpm-gpmRange[0])/gpmRange[1]));
+							mouseoutHero(d.heroId);
 						});
 			
 			
@@ -304,9 +319,18 @@
 					.selectAll("text")
 						.data(layers)
 					.enter().append("text")
+							.attr("id", function(d) {
+								return "label-"+d.heroId;
+							})
 							.attr("y", textY)
 							.attr("x", function(d) {
 								return x(d.peakWeek);
+							})
+							.on("mouseover", function(d) {
+								mouseoverHero(d.heroId);
+							})
+							.on("mouseout", function(d) {
+								mouseoutHero(d.heroId);
 							})
 							.attr("text-anchor", function(d) {
 								if(d.peakWeek==0) {
