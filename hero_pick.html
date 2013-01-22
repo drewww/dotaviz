@@ -38,19 +38,20 @@
 			opacity: 0;
 		}
 		
-		line.tick {
+		.y .tick {
 			stroke: #ccc;
+			opacity: 0.4;
 		  shape-rendering: crispEdges;
 		}
 		
 		line.tick.major {
-			stroke: #000;
+			stroke: #fff;
 		}
 		
 		.line {
 		  stroke: #aaa;
-			fill: none;
-			stroke-width: 4px;
+			fill: #aaa;
+			stroke-width: 1px;
 		}
 		
 		#container {
@@ -116,7 +117,8 @@
 				.domain([0, maxPicks])
 				.range([histogramHeight, 0]);
 			
-			var firstRun = true;
+			var counter = 0;
+			
 			var xAxis = d3.svg.axis()
 				.scale(x)
 				.tickFormat(function(d) {
@@ -124,42 +126,47 @@
 					var year = parseInt(d.substring(0, 4));
 					var week = parseInt(d.substring(4, 6));
 					
-					if(firstRun) {
-						firstRun = false;
+					if(counter==0) {
+						counter++;
 						return "Aug, " + year;
 					} else if(week==1) {
+						counter++;
 						return "Jan, " + year;
 					}
 					
+					counter++;
 					
-					
-					else return "";
+					return "";
 				})
 				.orient("bottom");
 			
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.ticks(3)
-				.tickSize(-histogramWidth)
+				.tickSize(-histogramWidth - 20)
 				.orient("left");
 				
-			svg.append("g")
-				.attr("class", "x axis")
-				.attr("transform", "translate(-20,"+histogramHeight + ")")
-				.call(xAxis);
 
-			svg.append("g")
-				.attr("class", "y axis")
-				.call(yAxis);
-			
-			var line = d3.svg.line()
+
+			var area = d3.svg.area()
 						.x(function(d) {return x(d.yearWeek);})
-						.y(function(d) {return y(d.totalPicks/10)});
+						.y0(histogramHeight)
+						.y1(function(d) {return y(d.totalPicks/10)});
 			
 			svg.append("path")
 						.datum(yearweeks)
 						.attr("class", "line")
-						.attr("d", line);
+						.attr("d", area);
+						
+						svg.append("g")
+							.attr("class", "y axis")
+							.call(yAxis);
+							svg.append("g")
+								.attr("class", "x axis")
+								.attr("transform", "translate(-20,"+histogramHeight + ")")
+								.call(xAxis);
+
+			
 		}
 		
 		function generateNormalizedStack() {
@@ -178,7 +185,6 @@
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
 				 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-				
 				
 				var x = d3.scale.linear()
 				    .domain([0, numWeeks - 1])
@@ -300,7 +306,17 @@
 							.attr("y", 100)
 							.attr("text-anchor", "end")
 							.text((gpmRange[0]+"").slice(0, 3) + " GPM")
-							
+			
+			
+			var colorHero = function(d) {
+				
+				if("isOtherHero" in d) {
+					return "#666";
+				}
+				
+				// normalize based on what GPMs we see in the data
+				return color((d.gpm-gpmRange[0])/gpmRange[1]);
+			}
 			
 			var mouseoverHero = function(id) {
 				console.log(id);
@@ -308,7 +324,6 @@
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
 
 				path.style("fill", "#ddd");
-				
 				
 				var text = svg.select("text#label-" + id);
 				text.attr("class", "hero-name selected")
@@ -319,12 +334,11 @@
 				
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
 				
-				path.style("fill", color((d.gpm-gpmRange[0])/gpmRange[1]));
+				path.style("fill", colorHero(d));
 
 				var text = svg.select("text#label-" + id);
 				text.attr("class", "hero-name")
 			}
-			
 			
 			var path = svg.append("g")
 					.attr("class", "paths")
@@ -335,10 +349,7 @@
 						.attr("id", function(d) {
 							return "hero-" + d.heroId;
 						})
-						.style("fill", function(d) {
-							// normalize based on what GPMs we see in the data
-							return color((d.gpm-gpmRange[0])/gpmRange[1]);
-						})
+						.style("fill", colorHero)
 						.on("mouseover", function(d) {
 							mouseoverHero(d.heroId);
 						})
@@ -456,7 +467,7 @@
 	<div id="charts">
 	</div>
 	<div id="footer">
-		Data courtesy of <a href="http://datdota.com/">DatDota</a>. Design and built by Drew Harry.
+		Designed and programmed by Drew Harry. Data courtesy of <a href="http://datdota.com/">DatDota</a>. 
 	</div>
 	</div>
 	

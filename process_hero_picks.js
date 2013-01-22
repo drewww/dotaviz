@@ -130,7 +130,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   var heroesArray = [];
   
-  var otherHero = {names:[], values:zeros(numYearweeks), heroesPicked:{}};
+  var otherHero = {names:[], values:zeros(numYearweeks), heroesPicked:{}, isOtherHero:true, "peakWeek":0, "heroName":"Other Heroes"};
   
   _.each(heroes, function(value, key) {
     if(value.totalPicks > 40) {
@@ -153,6 +153,10 @@ fs.readFile('hero_picks.csv', function(err, data) {
   });
   
   heroesArray = _.sortBy(heroesArray, "gpm");
+  
+  otherHero.heroName = "Other Heroes ("+otherHero.names.length+")";
+  
+  heroesArray.unshift(otherHero);
   
   
   fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray) + "; var others = " + JSON.stringify(otherHero));
