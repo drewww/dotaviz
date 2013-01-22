@@ -33,7 +33,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     var pieces = line.split(",");
     
     var entry = {"heroId":pieces[0], "heroName":pieces[1], "picks":pieces[2],
-      "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8])};
+      "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8]), "month":parseInt(pieces[9]), "year":parseInt(pieces[10]), "monthname":pieces[11]};
     
     entries.push(entry);
     
@@ -48,7 +48,10 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   var curYearweek = null;
   var yearweekIndex = 0;
+  var prevYearWeek = null;
   _.each(entries, function(entry) {
+    console.log(JSON.stringify(entry));
+    
     // okay, now we go through each entry. check and see if that hero name
     // is a key in heroes yet. if it is, add it to values. if not, create
     // a new hero.
@@ -61,13 +64,32 @@ fs.readFile('hero_picks.csv', function(err, data) {
       console.log("setting initial yearweek: " + curYearweek);
     } else {
       if(curYearweek!=entry.yearweek) {
+        var label;
         
+        // console.log("prevYearweek: " + prevYearWeek)
+        
+        if(_.isNull(curYearweek)) {
+          console.log("prev is null, using double entry");
+          label = entry.monthname + "\n" + entry.year;
+        } else {
+          if(parseInt(curYearweek.substring(0, 4)) != entry.year) {
+            console.log("year changed, using double")
+            label = entry.monthname + "\n" + entry.year;
+          } else if(parseInt(curYearweek.substring(4, 2)) != entry.month) {
+            console.log("month changed, using month");
+            label = entry.monthname;
+          } else {
+            label = "";
+          }
+        }
+        console.log("LABEL: " + label);
         // save some data in the yearWeeks accumulator
-        yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek});
+        yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek, "year":entry.year, "month":entry.month, "label":label});
         
         totalPicksInYearWeek = 0;
         yearweekIndex++;
         curYearweek = entry.yearweek;
+        
         console.log("new yearweek: " + entry.yearweek);
       }
     }
@@ -88,7 +110,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
       heroes[entry.heroName].deaths = heroes[entry.heroName].deaths + entry.deaths;
       heroes[entry.heroName].assists = heroes[entry.heroName].assists + entry.assists;
       
-      console.log(JSON.stringify(heroObj));
+      // console.log(JSON.stringify(heroObj));
       if(parseInt(entry.picks) > heroObj.maxPicks) {
         heroObj.maxPicks = parseInt(entry.picks);
         heroObj.peakWeek = yearweekIndex;

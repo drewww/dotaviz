@@ -115,9 +115,26 @@
 			var y = d3.scale.linear()
 				.domain([0, maxPicks])
 				.range([histogramHeight, 0]);
-				
+			
+			var firstRun = true;
 			var xAxis = d3.svg.axis()
 				.scale(x)
+				.tickFormat(function(d) {
+					d = d + "";
+					var year = parseInt(d.substring(0, 4));
+					var week = parseInt(d.substring(4, 6));
+					
+					if(firstRun) {
+						firstRun = false;
+						return "Aug, " + year;
+					} else if(week==1) {
+						return "Jan, " + year;
+					}
+					
+					
+					
+					else return "";
+				})
 				.orient("bottom");
 			
 			var yAxis = d3.svg.axis()
