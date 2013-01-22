@@ -53,7 +53,22 @@
 			stroke-width: 4px;
 		}
 		
+		#container {
+			width: 1000px;
+			margin-left: auto;
+			
+			padding-left: 80px;
+		}
 		
+		#charts {
+			margin-left: -80px;
+		}
+		
+		#footer {
+			margin-top: 10px;
+			width: 100%;
+			font-size: 0.8em;
+		}
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -63,7 +78,7 @@
 	<script type="text/javascript" charset="utf-8">
 	
 		var margin = {top: 0, right: 100, bottom: 0, left: 80};
-		var globalWidth = 1200;
+		var globalWidth = 1000;
 	
 		var numWeeks = 22;
 		
@@ -86,7 +101,7 @@
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
 			
-			var svg = d3.select("body").append("svg")
+			var svg = d3.select("#charts").append("svg")
 				.attr("width", histogramWidth + margin.left + margin.right)
 				.attr("height", histogramHeight + margin.top + margin.bottom)
 			.append("g")
@@ -141,7 +156,7 @@
 			
 			var gpmRangeColors = ["#131", "#cfc"];
 			
-			var svg = d3.select("body").append("svg")
+			var svg = d3.select("#charts").append("svg")
 					.attr("width", width + margin.left + margin.right)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
@@ -418,5 +433,15 @@
 	</script>
 </head>
 <body id="hero_pick" onload="">
+	<div id="container">
+	<h1>Dota2 Season 3 Professional Hero Picks</h1>
+	<p>Some explanatory text goes here.</p>
+	<div id="charts">
+	</div>
+	<div id="footer">
+		Data courtesy of <a href="http://datdota.com/">DatDota</a>. Design and built by Drew Harry.
+	</div>
+	</div>
+	
 </body>
 </html>

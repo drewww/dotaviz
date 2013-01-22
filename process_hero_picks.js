@@ -108,6 +108,8 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   var heroesArray = [];
   
+  var otherHero = {names:[], values:zeroes(numYearweeks), heroesPicked:{}};
+  
   _.each(heroes, function(value, key) {
     if(value.totalPicks > 40) {
       
@@ -117,6 +119,9 @@ fs.readFile('hero_picks.csv', function(err, data) {
       value.assists = value.assists / value.totalPicks;
       
       heroesArray.push(value);
+    } else {
+      otherHero.names.push(value.heroName);
+      
     }
   });
   
