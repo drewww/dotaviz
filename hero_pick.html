@@ -147,7 +147,6 @@
 				.values(function(d) { return d.values;});
 			
 			var layers = stack(heroes);
-			
 			_.each(heroes, function(hero) {
 				var peakWidth = 0;
 				var index = 0;
@@ -170,6 +169,7 @@
 					
 					if(value.y > peakWidth) {
 						hero.peakWeek = index;
+						hero.peakWidth = value.y;
 						hero.peakWeekFixed = true;
 						peakWidth = value.y;
 						
@@ -179,6 +179,10 @@
 					
 					index++;
 				});
+				
+				if(hero.peakWidth < 0.017) {
+					hero.peakWeek = 0;
+				}
 			});
 			
 			var node = svg.selectAll("path")
