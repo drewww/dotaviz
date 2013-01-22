@@ -93,11 +93,11 @@
 		
 		function generateMatchHistogram() {
 			
-			margin.bottom = 10;
+			margin.bottom = 40;
 			
 			// hell if I know why this isn't lining up but HACK TIME
 			var histogramWidth = globalWidth - margin.left - margin.right -25,
-			    histogramHeight = 50 - margin.top - margin.bottom;
+			    histogramHeight = 70 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
 			
@@ -109,7 +109,7 @@
 			
 			// not sure why I need this adjustment factor either but SCREW IT
 			var x = d3.scale.ordinal()
-				.rangeBands([0, histogramWidth+50], 0)
+				.rangeBands([0, histogramWidth+60], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
 			
 			var y = d3.scale.linear()
@@ -128,7 +128,7 @@
 				
 			svg.append("g")
 				.attr("class", "x axis")
-				.attr("transform", "translate(0,"+matchFrequencyHeight+")")
+				.attr("transform", "translate(-20,"+histogramHeight + ")")
 				.call(xAxis);
 
 			svg.append("g")
