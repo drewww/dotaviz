@@ -107,9 +107,13 @@
 		
 		function generateNormalizedStack() {
 			
+			// erg this is bad to have here but...
+			margin.top = 10;
+			
 			var width = globalWidth - margin.left - margin.right;
 			var height = 700 - margin.top - margin.bottom;
 			
+			var gpmRangeColors = ["#131", "#cfc"];
 			
 			var svg = d3.select("body").append("svg")
 					.attr("width", width + margin.left + margin.right)
@@ -127,18 +131,23 @@
 				    .range([height, 0]);
 
 				var color = d3.scale.linear()
-				    .range(["#131", "#cfc"]);
+				    .range(gpmRangeColors);
 						
 				var area = d3.svg.area()
 				    .x(function(d) { return x(d.x); })
 				    .y0(function(d) { return y(d.y0); })
 				    .y1(function(d) { return y(d.y0 + d.y); });
 				
+				// TODO convert this to d3 max/min finding
+				// beware, these numbers aren't actually GPM values, they're
+				// the sum of total GPM across all games.
 				var gpmRange = [1000, 0];
 				_.each(heroes, function(hero) {
 					if(hero.gpm < gpmRange[0]) gpmRange[0] = hero.gpm;
 					if(hero.gpm > gpmRange[1]) gpmRange[1] = hero.gpm;
 				});
+				
+				console.log("gpmRange: " + JSON.stringify(gpmRange));
 				
 			var stack = d3.layout.stack()
 				.offset("expand")
@@ -190,6 +199,50 @@
 				.data(layers)
 				.enter().append("g");
 
+			var gradient = svg.append("svg:defs")
+						.append("svg:linearGradient")
+							.attr("id", "gradient")
+							.attr("x1", "0%")
+							.attr("y1", "0%")
+							.attr("x2", "0%")
+					    .attr("y2", "100%")
+					    .attr("spreadMethod", "pad");
+			gradient.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", gpmRangeColors[1])
+				.attr("stop-opacity", 1);
+
+				gradient.append("svg:stop")
+					.attr("offset", "100%")
+					.attr("stop-color", gpmRangeColors[0])
+					.attr("stop-opacity", 1);
+
+			var gpmLegend = svg.append("g");
+			
+					gpmLegend.attr("class", "legend")
+						.append("rect")
+							.attr("x", -30)
+							.attr("y", 0)
+							.attr("width", 20)
+							.attr("height", 100)
+							.attr("fill", "url(#gradient)");
+							
+					
+					// assuming that GPM is always 3 digits here, which is (for now)
+					// a safe bet. highest average we see in pro games is 500
+					gpmLegend.append("text")
+							.attr("x", -32)
+							.attr("y", 8)
+							.attr("text-anchor", "end")
+							.text((gpmRange[1]+"").slice(0, 3) + " GPM");
+							
+					gpmLegend.append("text")
+							.attr("x", -32)
+							.attr("y", 100)
+							.attr("text-anchor", "end")
+							.text((gpmRange[0]+"").slice(0, 3) + " GPM")
+							
+							
 			var path = svg.append("g")
 					.attr("class", "paths")
 					.selectAll("path")
@@ -263,6 +316,10 @@
 									console.log(d.heroName);
 									console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
 									console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
+									
+									console.log("firstPoints: " + JSON.stringify(firstPoints));
+									console.log("secondPoints: " + JSON.stringify(secondPoints));
+
 								
 									var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
 								
