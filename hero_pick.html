@@ -42,8 +42,8 @@
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 	
-		var margin = {top: 0, right: 20, bottom: 10, left: 50};
-		var globalWidth = 1000;
+		var margin = {top: 0, right: 100, bottom: 10, left: 80};
+		var globalWidth = 1200;
 	
 		var numWeeks = 22;
 		
@@ -210,6 +210,15 @@
 							.attr("y", textY)
 							.attr("x", function(d) {
 								return x(d.peakWeek);
+							})
+							.attr("text-anchor", function(d) {
+								if(d.peakWeek==0) {
+									return "end";
+								} else if (d.peakWeek>=(numWeeks-3)) {
+									return "start";
+								} else {
+									return "start";
+								}
 							})
 							.attr("transform", function(d) {
 								// check to see if the peak week is at the start or end of the
