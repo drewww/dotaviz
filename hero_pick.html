@@ -59,7 +59,7 @@
 		function generateMatchHistogram() {
 			
 			var histogramWidth = globalWidth - margin.left - margin.right,
-			    histogramHeight = 100 - margin.top - margin.bottom;
+			    histogramHeight = 50 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
 			
@@ -83,6 +83,7 @@
 			
 			var yAxis = d3.svg.axis()
 				.scale(y)
+				.ticks(3)
 				.orient("left");
 				
 			svg.append("g")
