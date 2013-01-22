@@ -27,11 +27,24 @@
 		  stroke: #000;
 		  shape-rendering: crispEdges;
 		}
-
+		
+		.axis path {
+			opacity: 0;
+		}
+		
+		line.tick {
+			stroke: #ccc;
+		  shape-rendering: crispEdges;
+		}
+		
+		line.tick.major {
+			stroke: #000;
+		}
+		
 		.line {
 		  stroke: #aaa;
 			fill: none;
-			stroke-width: 2px;
+			stroke-width: 4px;
 		}
 		
 	</style>
@@ -42,7 +55,7 @@
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 	
-		var margin = {top: 0, right: 100, bottom: 10, left: 80};
+		var margin = {top: 0, right: 100, bottom: 0, left: 80};
 		var globalWidth = 1200;
 	
 		var numWeeks = 22;
@@ -57,6 +70,8 @@
 		});
 		
 		function generateMatchHistogram() {
+			
+			margin.bottom = 10;
 			
 			var histogramWidth = globalWidth - margin.left - margin.right,
 			    histogramHeight = 50 - margin.top - margin.bottom;
@@ -84,6 +99,7 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.ticks(3)
+				.tickSize(-histogramWidth)
 				.orient("left");
 				
 			svg.append("g")
@@ -109,6 +125,7 @@
 			
 			// erg this is bad to have here but...
 			margin.top = 10;
+			margin.bottom = 0;
 			
 			var width = globalWidth - margin.left - margin.right;
 			var height = 700 - margin.top - margin.bottom;
@@ -229,7 +246,8 @@
 							
 					
 					// assuming that GPM is always 3 digits here, which is (for now)
-					// a safe bet. highest average we see in pro games is 500
+					// a safe bet. highest average we see in pro games is 500. Not sure
+					// you can go much lower than 100 credibly. 
 					gpmLegend.append("text")
 							.attr("x", -32)
 							.attr("y", 8)
