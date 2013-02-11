@@ -451,7 +451,12 @@
 						return "translate(" + x(version.x) + ", 0)";
 					});
 					
-			versions.append("text")
+			versions.append("a")
+					.attr("xlink:href", function(version) {
+						return "http://www.playdota.com/changelogs/" + version.label;
+					})
+					.attr("target", "_blank")
+				.append("text")
 						.attr("x", 0)
 						.attr("y", -3)
 						.text(function(version) {
