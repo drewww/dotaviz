@@ -178,11 +178,11 @@
 				svg.append("text")
 				    .attr("class", "y label")
 				    .attr("text-anchor", "end")
-				    .attr("y", 10)
-						.attr("x", -30)
+						.style("font-size", "1.0em")
+				    .attr("y", 50)
+						.attr("x", 400)
 				    .attr("dy", ".75em")
-				    // .attr("transform", "rotate(-90)")
-				    .text("matches");
+				    .text("matches per week");
 			
 		}
 		
@@ -373,7 +373,7 @@
 					// animate in the extra info div.
 					
 					$("#other-heroes").show();
-					$("#other-heroes").animate({opacity:1, height: "30px"});
+					$("#other-heroes").animate({opacity:1, height: "30px"}, 200);
 					
 				}
 			}
@@ -392,7 +392,8 @@
 				if(_.isUndefined(id)) {
 					// we're over the "others" row
 					// animate in the extra info div.
-					$("#other-heroes").animate({opacity:0, height: "0px"}, function(){
+					$("#other-heroes").animate({opacity:0, height: "0px"},200, "swing", 
+					function(){
 						$(this).hide();
 					});
 				}
