@@ -142,7 +142,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
       
       heroesArray.push(value);
     } else {
-      otherHero.names.push(value.heroName);
+      otherHero.names.push(value.heroName + " ("+value.totalPicks+")");
       
       var i=0;
       _.each(value.values, function(picks) {

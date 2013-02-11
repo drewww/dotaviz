@@ -69,6 +69,16 @@
 			width: 100%;
 			font-size: 0.8em;
 		}
+		
+		#other-heroes {
+			width: 730px;
+			margin-left: 150px;
+			font-size: 0.7em;
+			color: #aaa;
+			
+			height: 0px;
+			opacity: 0;
+		}
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -350,7 +360,6 @@
 			}
 			
 			var mouseoverHero = function(id) {
-				console.log(id);
 				var path = svg.select("path#hero-" + id);
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
 				
@@ -358,6 +367,15 @@
 				
 				var text = svg.select("text#label-" + id);
 				text.attr("class", "hero-name selected")
+				
+				if(_.isUndefined(id)) {
+					// we're over the "others" row
+					// animate in the extra info div.
+					
+					$("#other-heroes").show();
+					$("#other-heroes").animate({opacity:1, height: "30px"});
+					
+				}
 			}
 			
 			var mouseoutHero = function(id) {
@@ -369,7 +387,16 @@
 				path.style("opacity", "1");
 
 				var text = svg.select("text#label-" + id);
-				text.attr("class", "hero-name")
+				text.attr("class", "hero-name");
+				
+				if(_.isUndefined(id)) {
+					// we're over the "others" row
+					// animate in the extra info div.
+					$("#other-heroes").animate({opacity:0, height: "0px"}, function(){
+						$(this).hide();
+					});
+				}
+				
 			}
 			
 			var path = svg.append("g")
@@ -459,6 +486,18 @@
 								}
 							})
 						  .text(function(d) { return d.heroName; });
+						
+						
+						// populate the #other-heroes div with a list of other hero picks.
+						var otherHeroesInfo = heroes[0];
+						
+						console.log(JSON.stringify(heroes[0]));
+						var otherHeroesInfoDiv = $("<div id='other-heroes'></div>");
+						otherHeroesInfoDiv.text(otherHeroesInfo.names.join(", "));
+						
+						$("#charts").append(otherHeroesInfoDiv);
+						
+						otherHeroesInfoDiv.hide();
 		}
 		
 		function getPathPointsForWeek(heroId, week) {
@@ -490,7 +529,6 @@
 	<h1>Dota2 Season 3 Professional Hero Picks</h1>
 	<p>Some explanatory text goes here.</p>
 	<div id="charts">
-	</div>
 	<div id="footer">
 		Designed and programmed by Drew Harry. Data courtesy of <a href="http://datdota.com/">DatDota</a>. 
 	</div>
