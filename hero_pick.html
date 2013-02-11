@@ -48,8 +48,7 @@
 		}
 		
 		.line {
-		  stroke: #aaa;
-			fill: #aaa;
+			fill: #345c59;
 			stroke-width: 1px;
 		}
 		
@@ -79,6 +78,13 @@
 			height: 0px;
 			opacity: 0;
 		}
+		
+		#versions line {
+			stroke: #345c59;
+			stroke-width: 2px;
+			opacity: 0.5;
+		}
+		
 	</style>
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
@@ -104,6 +110,7 @@
 		function generateMatchHistogram() {
 			
 			margin.bottom = 40;
+			margin.top = 0;
 			
 			// hell if I know why this isn't lining up but HACK TIME
 			var histogramWidth = globalWidth - margin.left - margin.right -25,
@@ -189,7 +196,7 @@
 		function generateNormalizedStack() {
 			
 			// erg this is bad to have here but...
-			margin.top = 10;
+			margin.top = 20;
 			margin.bottom = 0;
 			
 			var width = globalWidth - margin.left - margin.right;
@@ -373,7 +380,7 @@
 					// animate in the extra info div.
 					
 					$("#other-heroes").show();
-					$("#other-heroes").animate({opacity:1, height: "30px"}, 200);
+					$("#other-heroes").animate({opacity:1, height: "40px"}, 200);
 					
 				}
 			}
@@ -429,6 +436,34 @@
 					// the width of the bar at that point.
 					return points[0].y + width/2 + 3;
 			}
+			
+			// add the version markers as vertical bars
+			versionData = [{"x":5, "label":"6.75"}, {"x":8, "label":"6.76"}, {"x":15, "label":"6.77"}];
+			
+			var versionGroup = svg.append("g")
+				.attr("id", "versions");
+			
+			var versions = versionGroup.selectAll("g")
+				.data(versionData)
+				.enter().append("g")
+					.attr("class", "version")
+					.attr("transform", function(version) {
+						return "translate(" + x(version.x) + ", 0)";
+					});
+					
+			versions.append("text")
+						.attr("x", 0)
+						.attr("y", -3)
+						.text(function(version) {
+							return version.label;
+						});
+
+			versions.append("line")
+						.attr("x1", 0)
+						.attr("y1", 0)
+						.attr("x2", 0)
+						.attr("y2", height);
+			
 			
 			var text = svg.append("g")
 					.attr("class", "hero-name")
@@ -487,7 +522,6 @@
 								}
 							})
 						  .text(function(d) { return d.heroName; });
-						
 						
 						// populate the #other-heroes div with a list of other hero picks.
 						var otherHeroesInfo = heroes[0];
