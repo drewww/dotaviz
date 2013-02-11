@@ -329,7 +329,7 @@
 				console.log(id);
 				var path = svg.select("path#hero-" + id);
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
-
+				
 				path.style("fill", "#ddd");
 				
 				var text = svg.select("text#label-" + id);
@@ -428,11 +428,10 @@
 									console.log("secondPoints: " + JSON.stringify(secondPoints));
 
 								
-									var angle = Math.tan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
+									var angle = Math.atan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
 								
 									// angle = angle*-1;
-								
-									// console.log("angle: " + angle);
+									console.log("angle: " + angle);
 									// return "rotate(" + angle/Math.PI*180 + ")";
 									// return angle/Math.PI*180;
 								
