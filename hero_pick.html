@@ -266,18 +266,15 @@
 				}
 			});
 			
-			var node = svg.selectAll("path")
-				.data(layers)
-				.enter().append("g");
-
-			var gradient = svg.append("svg:defs")
-						.append("svg:linearGradient")
-							.attr("id", "gradient")
-							.attr("x1", "0%")
-							.attr("y1", "0%")
-							.attr("x2", "0%")
-					    .attr("y2", "100%")
-					    .attr("spreadMethod", "pad");
+			var defs = svg.append("svg:defs");
+			
+			var gradient = defs.append("svg:linearGradient")
+					.attr("id", "gradient")
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "0%")
+					.attr("y2", "100%")
+					.attr("spreadMethod", "pad");
 			gradient.append("svg:stop")
 				.attr("offset", "0%")
 				.attr("stop-color", gpmRangeColors[1])
@@ -287,6 +284,33 @@
 					.attr("offset", "100%")
 					.attr("stop-color", gpmRangeColors[0])
 					.attr("stop-opacity", 1);
+
+			var hashGradient = defs.append("svg:linearGradient")
+					.attr("id", "hash")
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "0%")
+					.attr("y2", "140%")
+					.attr("spreadMethod", "pad")
+					.attr("gradientTransform", "rotate(-50)");
+					
+			var hashColors = ["#9abb97", "#7ca277"];
+			var toggle = 0;
+			for(var i=0; i<20; i++) {
+				hashGradient.append("svg:stop")
+					.attr("offset", (i*5) + "%")
+					.attr("stop-color", hashColors[toggle])
+					.attr("stop-opacity", 1);
+				hashGradient.append("svg:stop")
+						.attr("offset", ((i+1)*5) + "%")
+						.attr("stop-color", hashColors[toggle])
+						.attr("stop-opacity", 1);
+				if(toggle==0) {
+					toggle=1;
+				} else {
+					toggle=0;
+				}
+			}
 
 			var gpmLegend = svg.append("g");
 			
@@ -318,7 +342,7 @@
 			var colorHero = function(d) {
 				
 				if("isOtherHero" in d) {
-					return "#999";
+					return "url(#hash)";
 				}
 				
 				// normalize based on what GPMs we see in the data
@@ -420,22 +444,16 @@
 									(secondPoints[0].y + secondPoints[1].y)/2];
 									// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
 								
-									console.log(d.heroName);
-									console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
-									console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
-									
-									console.log("firstPoints: " + JSON.stringify(firstPoints));
-									console.log("secondPoints: " + JSON.stringify(secondPoints));
+									// console.log(d.heroName);
+									// console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
+									// console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
+									// 
+									// console.log("firstPoints: " + JSON.stringify(firstPoints));
+									// console.log("secondPoints: " + JSON.stringify(secondPoints));
 
 								
 									var angle = Math.atan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
 								
-									// angle = angle*-1;
-									console.log("angle: " + angle);
-									// return "rotate(" + angle/Math.PI*180 + ")";
-									// return angle/Math.PI*180;
-								
-									// angle = 10;
 									return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
 								}
 							})
