@@ -354,7 +354,7 @@
 				var path = svg.select("path#hero-" + id);
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
 				
-				path.style("fill", "#ddd");
+				path.style("opacity", "0.5");
 				
 				var text = svg.select("text#label-" + id);
 				text.attr("class", "hero-name selected")
@@ -365,7 +365,8 @@
 				
 				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
 				
-				path.style("fill", colorHero(d));
+				// path.style("fill", colorHero(d));
+				path.style("opacity", "1");
 
 				var text = svg.select("text#label-" + id);
 				text.attr("class", "hero-name")
