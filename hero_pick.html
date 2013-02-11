@@ -77,7 +77,7 @@
 	<!-- rendering is here. -->
 	<script type="text/javascript" charset="utf-8">
 	
-		var margin = {top: 0, right: 100, bottom: 0, left: 150};
+		var margin = {top: 0, right: 190, bottom: 0, left: 150};
 		var globalWidth = 1000;
 	
 		var numWeeks = 22;
@@ -109,7 +109,7 @@
 			
 			// not sure why I need this adjustment factor either but SCREW IT
 			var x = d3.scale.ordinal()
-				.rangeBands([0, histogramWidth+130], 0)
+				.rangeBands([0, histogramWidth+140], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
 			
 			var y = d3.scale.linear()
@@ -142,7 +142,7 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.ticks(3)
-				.tickSize(-histogramWidth - 20-70)
+				.tickSize(-histogramWidth-20-80)
 				.orient("left");
 				
 
