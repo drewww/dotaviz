@@ -168,10 +168,10 @@
 				svg.append("text")
 				    .attr("class", "y label")
 				    .attr("text-anchor", "end")
-				    .attr("y", -40)
-						.attr("x", -5)
+				    .attr("y", 10)
+						.attr("x", -30)
 				    .attr("dy", ".75em")
-				    .attr("transform", "rotate(-90)")
+				    // .attr("transform", "rotate(-90)")
 				    .text("matches");
 			
 		}
@@ -292,7 +292,7 @@
 			
 					gpmLegend.attr("class", "legend")
 						.append("rect")
-							.attr("x", -30)
+							.attr("x", -80)
 							.attr("y", 0)
 							.attr("width", 20)
 							.attr("height", 100)
@@ -303,13 +303,13 @@
 					// a safe bet. highest average we see in pro games is 500. Not sure
 					// you can go much lower than 100 credibly. 
 					gpmLegend.append("text")
-							.attr("x", -32)
+							.attr("x", -82)
 							.attr("y", 8)
 							.attr("text-anchor", "end")
 							.text((gpmRange[1]+"").slice(0, 3) + " GPM");
 							
 					gpmLegend.append("text")
-							.attr("x", -32)
+							.attr("x", -82)
 							.attr("y", 100)
 							.attr("text-anchor", "end")
 							.text((gpmRange[0]+"").slice(0, 3) + " GPM")
