@@ -183,7 +183,7 @@
 			
 			// not sure why I need this adjustment factor either but SCREW IT
 			var x = d3.scale.ordinal()
-				.rangeBands([0, histogramWidth+240], 0)
+				.rangeBands([0, histogramWidth+195], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
 			
 			var y = d3.scale.linear()
@@ -216,7 +216,7 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.ticks(3)
-				.tickSize(-histogramWidth-240)
+				.tickSize(-histogramWidth-155)
 				.orient("left");
 				
 
@@ -265,10 +265,10 @@
 					.attr("width", 1100)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
-				 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 				
 				var x = d3.scale.linear()
-				    .domain([0, numWeeks - 1])
+				    .domain([0, numWeeks - 2])
 				    .range([0, globalWidth - margin.right]);
 
 				var y = d3.scale.linear()
@@ -300,6 +300,8 @@
 					return d3.range(data.length);
 				})
 				.values(function(d) { return d.values;});
+			
+			var togglePlacement = 0;
 			
 			var layers = stack(heroes);
 			_.each(heroes, function(hero) {
@@ -335,8 +337,13 @@
 					index++;
 				});
 				
-				if(hero.peakWidth < 0.017) {
-					hero.peakWeek = 0;
+				
+				if(hero.peakWidth < 0.020) {
+					hero.peakWeek = togglePlacement;
+					
+					if(togglePlacement==0) {
+						togglePlacement = yearweeks.length;
+					}
 				}
 			});
 			
