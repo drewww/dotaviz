@@ -23,11 +23,8 @@ function zeros(l) {
 }
 
 fs.readFile('hero_picks.csv', function(err, data) {
-  
-  
   // first parse things into sensible objects.
   lines = data.toString("ascii").split("\n");
-  
   
   _.each(lines, function(line) {
     var pieces = line.split(",");
