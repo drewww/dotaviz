@@ -127,7 +127,7 @@
 		}
 		
 		#other-heroes {
-			width: 730px;
+			width: 850px;
 			margin-left: 150px;
 			font-size: 0.7em;
 			color: #aaa;
@@ -151,7 +151,7 @@
 	<script type="text/javascript" charset="utf-8">
 	
 		var margin = {top: 0, right: 190, bottom: 0, left: 150};
-		var globalWidth = 1000;
+		var globalWidth = 980;
 	
 		var numWeeks = 22;
 		
@@ -170,7 +170,7 @@
 			margin.top = 0;
 			
 			// hell if I know why this isn't lining up but HACK TIME
-			var histogramWidth = globalWidth - margin.left - margin.right,
+			var histogramWidth = globalWidth - margin.left - margin.right + 35,
 			    histogramHeight = 80 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
@@ -244,7 +244,7 @@
 				    .attr("text-anchor", "end")
 						.style("font-size", "1.0em")
 				    .attr("y", 50)
-						.attr("x", 400)
+						.attr("x", 500)
 				    .attr("dy", ".75em")
 				    .text("matches per week");
 			
@@ -262,7 +262,7 @@
 			var gpmRangeColors = ["#4B7A45", "#efe"];
 			
 			var svg = d3.select("#charts").append("svg")
-					.attr("width", width + margin.left + margin.right)
+					.attr("width", 1100)
 					.attr("height", height + margin.top + margin.bottom)
 					.append("g")
 				 		.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
@@ -437,7 +437,7 @@
 					// animate in the extra info div.
 					
 					$("#other-heroes").show();
-					$("#other-heroes").animate({opacity:1, height: "40px"}, 200);
+					$("#other-heroes").animate({opacity:1, height: "50px"}, 200);
 					
 				}
 			}
