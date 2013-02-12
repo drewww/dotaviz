@@ -41,7 +41,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
   
   console.log("yearweeks: " + Object.keys(yearweeks).length);
   console.log("yearweeks: " + JSON.stringify(Object.keys(yearweeks)));
-  var numYearweeks = Object.keys(yearweeks).length-2;
+  var numYearweeks = Object.keys(yearweeks).length-4;
   
   var curYearweek = null;
   var yearweekIndex = 0;
@@ -52,7 +52,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     // okay, now we go through each entry. check and see if that hero name
     // is a key in heroes yet. if it is, add it to values. if not, create
     // a new hero.
-    if(parseInt(entry.yearweek) < 201235) {
+    if(parseInt(entry.yearweek) < 201238 || parseInt(entry.yearweek) > 201305) {
       return;
     }
     
