@@ -159,6 +159,18 @@
 		
 		var showNormalized = true;
 		
+		var adjust = {
+			"Shadow Demon":-2,
+			"Keeper of the Light":-1,
+			"Sand King":-1,
+			"Nyx Assassin":-3,
+			"Night Stalker":-7,
+			"Puck":-1,
+			"Gyrocopter":-1,
+			"Templar Assassin":-2,
+			"Chaos Knight":-2
+		};
+		
 		$("document").ready(function() {
 			generateNormalizedStack();
 			generateMatchHistogram();
@@ -494,6 +506,11 @@
 			
 			
 			var textY = function(d) {
+					
+					if(d.heroName in adjust) {
+						d.peakWeek = d.peakWeek + adjust[d.heroName];
+					}
+					
 					var points = getPathPointsForWeek(d.heroId, d.peakWeek);
 					
 					var width =  points[1].y - points[0].y;
