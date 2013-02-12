@@ -170,7 +170,7 @@
 			margin.top = 0;
 			
 			// hell if I know why this isn't lining up but HACK TIME
-			var histogramWidth = globalWidth - margin.left - margin.right -25,
+			var histogramWidth = globalWidth - margin.left - margin.right,
 			    histogramHeight = 80 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
@@ -183,7 +183,7 @@
 			
 			// not sure why I need this adjustment factor either but SCREW IT
 			var x = d3.scale.ordinal()
-				.rangeBands([0, histogramWidth+140], 0)
+				.rangeBands([0, histogramWidth+240], 0)
 				.domain(_.pluck(yearweeks, "yearWeek"));
 			
 			var y = d3.scale.linear()
@@ -216,7 +216,7 @@
 			var yAxis = d3.svg.axis()
 				.scale(y)
 				.ticks(3)
-				.tickSize(-histogramWidth-20-80)
+				.tickSize(-histogramWidth-240)
 				.orient("left");
 				
 
