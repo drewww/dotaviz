@@ -473,7 +473,11 @@
 						})
 						.on("mouseout", function(d) {
 							mouseoutHero(d.heroId);
-						});
+						})
+						.append("svg:title")
+							.text(function(d) {
+								return d.heroName;
+							});
 			
 			
 			var textY = function(d) {
