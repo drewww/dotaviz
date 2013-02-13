@@ -9,8 +9,11 @@
 	<script src="http://underscorejs.org/underscore-min.js"></script>
 	
 	<style type="text/css" media="screen">
+	
+	@import url(http://fonts.googleapis.com/css?family=Dosis:200,500,700|Bitter:400,700,400italic);
+	
 		body {
-		  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+		  font-family: "Dosis", "Helvetica Neue", Helvetica, Arial, sans-serif;
 		  margin: 0px;
 			background-color: #eee;
 		}
@@ -51,6 +54,10 @@
 			text-shadow: 0px 1px 0px #000000;
 		}
 		
+		h1, h2, h3 {
+			font-family: 'Bitter', 'serif';
+		}
+		
 		#header h1 {
 
 		}
@@ -73,7 +80,7 @@
 		}
 		
 		text {
-		  font: 10px sans-serif;
+		  font: 12px "Dosis";
 			color: white;
 		}
 
@@ -127,13 +134,25 @@
 		}
 		
 		#footer {
-			font-size: 0.8em;
 			padding-top: 10px;
 			padding-bottom: 10px;
 			padding-left: 150px;
 			padding-right: 100px;
 			width: 830px;
 			margin-bottom: 10px;
+		}
+		
+		#footer p {
+			font-size: 1.2em;
+			
+			margin-top: 5px;
+			margin-bottom: 10px;
+		}
+		
+		#credits {
+			font-size: 1.0em;
+			font-weight: 200;
+			margin-top: 15px;
 		}
 		
 		#other-heroes {
@@ -688,10 +707,14 @@
 		<p>This visualization draws inspiration from the 1-5 ranking system, in which a player in the 1 role gets the most access to farm and the player in the 5 role gets the least. This continuum much more closely matches the reality. If we rank heroes by their average farm rates they fall out into those tiers naturally. The serious fan should be unsurprised to see heroes like <span class="hero">Crystal Maiden</span> or <span class="hero">Shadow Demon</span> at the bottom and <span class="hero">Phantom Lancer</span>, <span class="hero">Anti-Mage</span>, and <span class="hero">Tiny</span> at the top. Between those extremes we find heroes that tend to be played in the middle lane (<span class="hero">Templar Assasin</span>, <span class="hero">Tinker</span>, <span class="hero">Queen of Pain</span>), followed by semi-carries and junglers like <span class="hero">Leshrac</span>, <span class="hero">Enigma</span>, <span class="hero">Undying</span>, or <span class="hero">Chen</span>.</p>
 		
 		<p>One of the interesting trends this organization reveals is the increasing popularity of farm-heavy heroes. If we look at the relative popularity of the lightest color slices in the chart (like <span class="hero">Phantom Lancer</span>, <span class="hero">Tiny</span>, and <span class="hero">Luna</span>) we can their slow but significant growth over this period. While <span class="hero">Morphling</span> was the king of carries at TI2, he has basically disappeared post 6.75 and teams are opting for even more farm dependent carries than ever before. <b>The farming era of Dota is coming back, even with the increased ganking rewards in recent updates.</b><p>
+			
+			<h2>Questions?</h2>
+			<p>Got comments, questions, or suggestions? Please feel free to <a href="mailto:drew.harry@gmail.com">email me</a>. I'll update this page as appropriate with clarifications and improvements.
+			
+			<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewwww</a>, using data from <a href="http://datdota.com/">DatDota</a>.</div>
 		</div>
 		
 		
-		<div id="credits">Designed by <a href="http://web.media.mit.edu/~dharry">Drew Harry</a>, using data from <a href="http://datdota.com/">DatDota</a>.</div>
 	</div>
 	
 </body>
