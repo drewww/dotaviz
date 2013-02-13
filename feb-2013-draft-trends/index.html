@@ -225,7 +225,7 @@
 			"Sand King":-1,
 			"Nyx Assassin":-3,
 			"Night Stalker":-7,
-			"Puck":-1,
+			"Puck":1,
 			"Gyrocopter":-1,
 			"Templar Assassin":-2,
 			"Chaos Knight":-2,
@@ -367,7 +367,7 @@
 					if(hero.gpm > gpmRange[1]) gpmRange[1] = hero.gpm;
 				});
 				
-				console.log("gpmRange: " + JSON.stringify(gpmRange));
+				// console.log("gpmRange: " + JSON.stringify(gpmRange));
 				
 			var stack = d3.layout.stack()
 				.offset("expand")
@@ -648,7 +648,7 @@
 							.attr("transform", function(d) {
 								// check to see if the peak week is at the start or end of the
 								// set.
-								console.log(d.peakWeek);
+								// console.log(d.peakWeek);
 								if(d.peakWeek==0) {
 									return "";
 								} else if (d.peakWeek>=(numWeeks-3)) {
@@ -679,7 +679,7 @@
 						// populate the #other-heroes div with a list of other hero picks.
 						var otherHeroesInfo = heroes[0];
 						
-						console.log(JSON.stringify(heroes[0]));
+						// console.log(JSON.stringify(heroes[0]));
 						var otherHeroesInfoDiv = $("<div id='other-heroes'></div>");
 						otherHeroesInfoDiv.text(otherHeroesInfo.names.join(", "));
 						
