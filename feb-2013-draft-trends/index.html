@@ -213,7 +213,7 @@
 		var margin = {top: 0, right: 190, bottom: 0, left: 150};
 		var globalWidth = 980;
 	
-		var numWeeks = 22;
+		var numWeeks = 21;
 		
 		var matchFrequencyHeight = 100;
 		
@@ -628,6 +628,7 @@
 							})
 							.attr("y", textY)
 							.attr("x", function(d) {
+								if(d.peakWeek>20) return x(20);
 								return x(d.peakWeek);
 							})
 							.on("mouseover", function(d) {
@@ -651,7 +652,7 @@
 								// console.log(d.peakWeek);
 								if(d.peakWeek==0) {
 									return "";
-								} else if (d.peakWeek>=(numWeeks-3)) {
+								} else if (d.peakWeek>=(numWeeks-2)) {
 									return "";
 								} else {
 									var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
@@ -659,15 +660,6 @@
 								
 									var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
 									(secondPoints[0].y + secondPoints[1].y)/2];
-									// var centerPointsY = [firstPoints[1].y, secondPoints[1].y];
-								
-									// console.log(d.heroName);
-									// console.log("rise: " + (centerPointsY[1] - centerPointsY[0]));
-									// console.log("run: " + (secondPoints[0].x - firstPoints[0].x));
-									// 
-									// console.log("firstPoints: " + JSON.stringify(firstPoints));
-									// console.log("secondPoints: " + JSON.stringify(secondPoints));
-
 								
 									var angle = Math.atan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
 								
@@ -695,6 +687,10 @@
 			
 			// now get the points
 			var segs = path.pathSegList;
+			
+			if(week>20) {
+				week = 20;
+			}
 			
 			var upperPoint = segs.getItem(week);
 			// lower point will be the only other one with the same x
