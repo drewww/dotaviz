@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>hero_pick</title>
+	<title>The Metagame Journal &mdash; Feb 2013</title>
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -36,7 +36,7 @@
 			top: 0px;
 			
 			padding-left: 15px;
-			height: 70px;
+			height: 50px;
 		}
 
 		#intro {
@@ -117,7 +117,11 @@
 		}
 
 		#container {
-			margin-top: 90px;
+			margin-top: 50px;
+		}
+		
+		#container h2 {
+			margin-left: 70px;
 		}
 		
 		.container {
@@ -205,6 +209,8 @@
 		};
 		
 		$("document").ready(function() {
+			$('#background').hide();
+			
 			generateNormalizedStack();
 			generateMatchHistogram();
 		});
@@ -246,7 +252,7 @@
 					
 					if(counter==0) {
 						counter++;
-						return "Aug, " + year;
+						return "Sep, " + year;
 					} else if(week==1) {
 						counter++;
 						return "Jan, " + year;
@@ -685,22 +691,30 @@
 <body id="hero_pick" onload="">
 	<div id="header">
 	<h1>The Metagame Journal</h1>
-	<h2>Drafting trends in Dota 2 professional games. February, 2013</h2>
-	<br class="clear">
 	</div>
 	
 	<div id="container" class="container">
+	<h2>Dota 2 Drafting Analysis, February 2013</h2>
 	<div id="charts">
 	</div>
 		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewwww</a> using <a href="http://d3js.org/">d3.js</a>, with data from <a href="http://datdota.com/">DatDota</a>. Code available on <a href="https://github.com/drewww/dotaviz">Github</a>.</div>
 	</div>
 	</div>
 	<div id="footer" class="container">
-		<h2>The Visualization</h2>
-<p>Every follower of professional Dota (and Dota-like games like <i>League of Legends</i>) has a sense that certain team compositions and particular heroes rise and fall in popularity over time. This happens for a variety of reasons: a style of play for which that hero is well suited can experience a surge in popularity, a player might develop a new way of fitting a hero into a team composition creating new opportunities for its use, or a player might demonstrate the power of a previously overlooked hero.</p>
+		<h2>Introduction</h2>
+		<p>Every fan of professional Dota (and Dota-like games like <i>League of Legends</i>) has a sense that certain team compositions and particular heroes rise and fall in popularity over time. This happens for a variety of reasons: a style of play for which that hero is well suited can experience a surge in popularity, a player might develop a new way of fitting a hero into a team composition creating new opportunities for its use, or a player might demonstrate the power of a previously overlooked hero. Conversely, heroes fall out of favor because strong counters to them become better understood. </p>
 
-<p>Historically, there have been few attempts to capture these trends in a holistic way. Snapshots of trends in a particular tournament are common, but the macro-level trends can be difficult to get a handle on. This visualization aims to demonstrate some of these trends and allow for richer conversations about the past, present, and future of drafting in competitive Dota matches.<p>
-	
+		<p>Historically, there have been few attempts to capture these trends in a holistic way. Snapshots of trends in a particular tournament are common, but the macro-level trends can be difficult to get a handle on. This visualization aims to demonstrate some of these trends and allow for richer conversations about the past, present, and future of drafting trends in competitive Dota matches.<p>
+			
+		<p>Not familiar with Dota? <a href="#bg" onclick="$('#background').show(300);">Here's some more background.</a></p>
+		
+		<div id="background">
+		<h2>Background</h2>
+		<a id="bg"></a>
+		
+		</div>
+		
+		<h2>The Visualization</h2>
 <p>In this visualization, each slice represents the relative popularity of a hero during each week; the wider the band, the more frequently is was picked in that week. The width of each slice is normalized against total games played (i.e. total number of opportunities for a hero to be picked) such that thickness represents (more or less) the odds that a hero appeared in a game during that week. Only the frequently picked heroes are assigned slices at all. Lower frequency picks are aggregated into the last slice.<p>
 		
 		<h2>The Data</h2>
