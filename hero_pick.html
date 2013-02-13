@@ -246,7 +246,7 @@
 			
 			// hell if I know why this isn't lining up but HACK TIME
 			var histogramWidth = globalWidth - margin.left - margin.right + 35,
-			    histogramHeight = 80 - margin.top - margin.bottom;
+			    histogramHeight = 70 - margin.top - margin.bottom;
 			
 			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
 			
@@ -332,7 +332,7 @@
 			margin.bottom = 0;
 			
 			var width = globalWidth - margin.left - margin.right;
-			var height = 700 - margin.top - margin.bottom;
+			var height = 600 - margin.top - margin.bottom;
 			
 			var gpmRangeColors = ["#4B7A45", "#efe"];
 			
