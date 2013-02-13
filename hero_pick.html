@@ -126,14 +126,6 @@
 			stroke-width: 1px;
 		}
 
-		#container {
-			margin-top: -10px;
-		}
-		
-		#container h2 {
-			margin-left: 70px;
-		}
-		
 		.container {
 			width: 1000px;
 			margin-left: auto;
@@ -194,6 +186,19 @@
 			float: right;
 			margin-right: 70px;
 			margin-top: 15px;
+		}
+		
+		#new {
+			float: right;
+			margin-right: 100px;
+			font-size: 0.8em;
+			margin-top: 15px;
+		}
+		
+		#container h2 {
+			float: left;
+			margin-left: 70px;
+			margin-top: 5px;
 		}
 		
 	</style>
@@ -714,6 +719,8 @@
 	
 	<div id="container" class="container">
 	<h2>Dota 2 Drafting Analysis, February 2013</h2>
+	<div id="new"><a href="#bg" onclick="$('#background').show(300);">Not familiar with Dota?</a></div>
+	<br class="clear">
 	<div id="charts">
 	</div>
 		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewww</a>
@@ -733,19 +740,17 @@
 	</div>
 	</div>
 	<div id="footer" class="container">
+		<div id="background">
+		<h2>Welcome to Dota</h2>
+		<a id="bg"></a>
+		<p>Dota 2 is a competitive multiplayer game.<p>
+		
+		</div>
+		
 		<h2>Introduction</h2>
 		<p>Every fan of professional Dota (and Dota-like games like <i>League of Legends</i>) has a sense that certain team compositions and particular heroes rise and fall in popularity over time. This happens for a variety of reasons: a style of play for which that hero is well suited can experience a surge in popularity, a player might develop a new way of fitting a hero into a team composition creating new opportunities for its use, or a player might demonstrate the power of a previously overlooked hero. Conversely, heroes fall out of favor because strong counters to them become better understood. </p>
 
 		<p>Historically, there have been few attempts to capture these trends in a holistic way. Snapshots of trends in a particular tournament are common, but the macro-level trends can be difficult to get a handle on. This visualization aims to demonstrate some of these trends and allow for richer conversations about the past, present, and future of drafting trends in competitive Dota matches.<p>
-			
-		<p>Not familiar with Dota? <a href="#bg" onclick="$('#background').show(300);">Here's some more background.</a></p>
-		
-		<div id="background">
-		<h2>Background</h2>
-		<a id="bg"></a>
-		
-		</div>
-		
 		<h2>The Visualization</h2>
 <p>In this visualization, each slice represents the relative popularity of a hero during each week; the wider the band, the more frequently is was picked in that week. The width of each slice is normalized against total games played (i.e. total number of opportunities for a hero to be picked) such that thickness represents (more or less) the odds that a hero appeared in a game during that week. Only the frequently picked heroes are assigned slices at all. Lower frequency picks are aggregated into the last slice.<p>
 		
