@@ -170,6 +170,8 @@
 			margin-top: 15px;
 			padding-bottom: 10px;
 			padding-left: 70px;
+			
+			float: left;
 		}
 		
 		#other-heroes {
@@ -188,7 +190,14 @@
 			opacity: 0.5;
 		}
 		
+		#social {
+			float: right;
+			margin-right: 70px;
+			margin-top: 15px;
+		}
+		
 	</style>
+	
 	<!-- Data is here. -->
 	<script type="text/javascript" src="hero_picks.js"></script>
 	<script type="text/javascript" src="yearweeks.js"></script>
@@ -707,7 +716,20 @@
 	<h2>Dota 2 Drafting Analysis, February 2013</h2>
 	<div id="charts">
 	</div>
-		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewwww</a> using <a href="http://d3js.org/">d3.js</a>, with data from <a href="http://datdota.com/">DatDota</a>. Code available on <a href="https://github.com/drewww/dotaviz">Github</a>.</div>
+		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewww</a>
+		using <a href="http://d3js.org/">d3.js</a>, with data from <a href="http://datdota.com/">DatDota</a>. Code available on <a href="https://github.com/drewww/dotaviz">Github</a>.
+		</div>
+		
+		<div id="social">
+		<a href="https://twitter.com/drewwww" class="twitter-follow-button" data-show-count="false">Follow @drewwww</a>
+		
+		<a href="https://twitter.com/share" class="twitter-share-button" data-via="drewwww">Tweet</a>
+
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
+		
+		<br class="clear">
+		</div>
 	</div>
 	</div>
 	<div id="footer" class="container">
