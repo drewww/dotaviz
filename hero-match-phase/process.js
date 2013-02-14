@@ -48,11 +48,10 @@ fs.readFile('hero_performance.csv', function(err, data) {
   // on length (just do two bins to start, > and < 25 mins) and calc
   // win rate in each category.
   
-  var heroMetadata = {};
+  var heroesOut = {};
   _.each(Object.keys(heroes), function(heroName) {
     var matches = heroes[heroName];
     
-    heroMetadata.heroName = heroName;
     lengths = [[[], []], [[], []], [[], []]];
     
     _.each(matches, function(match) {
@@ -78,9 +77,15 @@ fs.readFile('hero_performance.csv', function(err, data) {
     console.log("long: " + lengths[2][1].length + "/" + (lengths[2][1].length + lengths[2][0].length) + " = " + (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length)));
     console.log("---");
     
+    var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
     
-    // console.log(JSON.stringify(heroMetadata));
+    var out = {heroName:heroName, winRates: winRates, numMatches: [(lengths[0][1].length + lengths[0][0].length), (lengths[1][1].length + lengths[1][0].length), (lengths[2][1].length + lengths[2][0].length)]};
+    
+    out.totalMatches = out.numMatches[0] + out.numMatches[1] + out.numMatches[2];
+    
+    heroesOut[heroName] = out;
   });
   
+  fs.writeFileSync('hero_performance.js', "var heroes = " + JSON.stringify(heroesOut));
 });
 
