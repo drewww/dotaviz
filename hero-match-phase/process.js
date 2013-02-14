@@ -5,6 +5,18 @@ var entries = [];
 
 var heroes = {};
 
+// ugh this is in the std lib somewhere but fuck if I know what it is and I
+// don't want to pay for plane wifi, so lets do this!
+function mean(list) {
+  var total = 0;
+  
+  _.each(list, function(item) {
+    total += item;
+  })
+
+  return total / list.length;
+}
+
 fs.readFile('hero_performance.csv', function(err, data) {
   lines = data.toString("ascii").split("\n");
   console.log("lines: " + lines.length);
@@ -41,23 +53,33 @@ fs.readFile('hero_performance.csv', function(err, data) {
     var matches = heroes[heroName];
     
     heroMetadata.heroName = heroName;
-    heroMetadata.matchLengths = [[[], []], [[], []]];
+    lengths = [[[], []], [[], []], [[], []]];
     
     _.each(matches, function(match) {
       var index;
-      if(match.matchLength > 30) {
+      if(match.matchLength < 25) {
         index = 0;
-      } else {
+      } else if(match.matchLength < 40) {
         index = 1;
+      } else {
+        index = 2;
       }
       
       var won = 0;
       if(match.winner) won = 1;
       
-      heroMetadata.matchLengths[index][won].push(match.matchLength);
+      lengths[index][won].push(match.matchLength);
     });
     
-    console.log(JSON.stringify(heroMetadata));
+    // now summarize into numbers.
+    console.log(heroName);
+    console.log("short: " + lengths[0][1].length + "/" + (lengths[0][1].length + lengths[0][0].length) + " = " + (lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)));
+    console.log("med: " + lengths[1][1].length + "/" + (lengths[1][1].length + lengths[1][0].length) + " = " + (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)));
+    console.log("long: " + lengths[2][1].length + "/" + (lengths[2][1].length + lengths[2][0].length) + " = " + (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length)));
+    console.log("---");
+    
+    
+    // console.log(JSON.stringify(heroMetadata));
   });
   
 });
