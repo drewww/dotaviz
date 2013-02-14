@@ -11,4 +11,4 @@ select herodisp.hero_num, hero_name, count(*) as picks, sum(gpm)/count(*) as gpm
  -- it's hard. so basically we're just going to dump mymatches into a CSV and
  -- deal with it all in JS.  
  
-select mymatch.id, bs_info.index, hero_num, winner into outfile '/tmp/all_picks.csv' FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' from bs_info join mymatch on mymatch.id = bs_info.id;
+select mymatch.id, bs_info.index, hero_num, (bs_info.index < 5 && winner=2) or (bs_info.index >= 5 && winner=3) as winner into outfile '/tmp/all_picks.csv' FIELDS TERMINATED BY ',' LINES TERMINATED BY '\n' from bs_info join mymatch on mymatch.id = bs_info.id;
