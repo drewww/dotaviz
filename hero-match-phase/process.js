@@ -45,7 +45,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
     
     _.each(matches, function(match) {
       var index;
-      if(match.matchLength > 25) {
+      if(match.matchLength > 30) {
         index = 0;
       } else {
         index = 1;
@@ -54,7 +54,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
       var won = 0;
       if(match.winner) won = 1;
       
-      heroMetadata.matchLength[index][won].push(match.matchLength);
+      heroMetadata.matchLengths[index][won].push(match.matchLength);
     });
     
     console.log(JSON.stringify(heroMetadata));
