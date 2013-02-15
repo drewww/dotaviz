@@ -18,17 +18,40 @@ fs.readFile('hero_nodes.csv', function(err, data) {
   
   
   // now load in the games data.
-  
+  var matches = {}
   fs.readFile('all_picks.csv', function(err, data) {
     lines = data.toString("ascii").split("\n");
     
+    var pick;
     _.each(lines, function(line) {
       var pieces = line.split(",");
       
-      var match = {matchId: parseInt(pieces[0]), index:parseInt(pieces[1]), heroId:parseInt(pieces[2]), winner:pieces[3]=="1"};
-
-      console.log(JSON.stringify(match));
+      pick = {matchId: parseInt(pieces[0]), index:parseInt(pieces[1]), heroId:parseInt(pieces[2]), winner:pieces[3]=="1"};
+      
+      if(!(pick.matchId in matches)) {
+        matches[pick.matchId] = [];
+      }
+      matches[pick.matchId][pick.index] = pick;
     });
-  })
+    
+    console.log(JSON.stringify(matches["117686346"]));
+  });
+
   
+  // now we get to the fun part. how much graph functionality do we need here?
+  // to start with, we want to link heroIds to lists of other heroIds they
+  // have been picked with. data structure for that will be a dict:
+  // key is heroId
+  // contains a dict that has {sameTeam:{heroId->number of coOccurences}}
+  // we'll add in other stuff later (like wins/losses, and enemies)
+  
+  
+  // _.each(matches, function(picks) {
+  //   
+  //   _.each(picks, function(pick) {
+  //     
+  //   });
+  //   
+  //   
+  // });
 });
