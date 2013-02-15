@@ -51,6 +51,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         var teamIds = [];
         var startIndex;
         var stopIndex;
+        
         if(pick.index < 5) {
           startIndex = 0;
           stopIndex = 5;
@@ -66,15 +67,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         
         console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
         
-        _.each(teamIds, function(heroId) {
-          if(!(heroId in heroToUpdate.pickedWith)) {
-            heroToUpdate.pickedWith[heroId] = 0;
-          } 
-          
-          heroToUpdate.pickedWith[heroId] = heroToUpdate.pickedWith[heroId]+1;
-        });
-        
-        heroes[heroToUpdate.heroId] = heroToUpdate;
+        updatePickedWith(heroToUpdate.heroId, teamIds, "pickedWith");
       });
     });
 
@@ -98,9 +91,25 @@ fs.readFile('hero_nodes.csv', function(err, data) {
       
       for(var i=picksList.length-1; i>=0; i--) {
         var item = picksList[i];
+        
         console.log(item.picks + "  " + heroes[item.heroId].heroName);
       }
       
     });
   });
 });
+
+
+function updatePickedWith(heroId, linkedIds, key) {
+  var heroToUpdate = heroes[heroId];
+  
+  _.each(linkedIds, function(heroId) {
+    if(!(heroId in heroToUpdate[key])) {
+      heroToUpdate[key][heroId] = 0;
+    } 
+    
+    heroToUpdate[key][heroId] = heroToUpdate[key][heroId]+1;
+  });
+  
+  heroes[heroId] = heroToUpdate;
+}
