@@ -41,9 +41,9 @@ fs.readFile('hero_nodes.csv', function(err, data) {
     // contains a dict that has {sameTeam:{heroId->number of coOccurences}}
     // we'll add in other stuff later (like wins/losses, and enemies)
     _.each(matches, function(picks) {
-      console.log("--------------------");
-      
-      console.log("picks: " + _.pluck(picks, "heroId"));
+      // console.log("--------------------");
+      // 
+      // console.log("picks: " + _.pluck(picks, "heroId"));
       
       _.each(picks, function(pick) {
         var heroToUpdate = heroes[pick.heroId];
@@ -77,7 +77,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
           enemyIds.push(picks[i].heroId);
         }
         
-        console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
+        // console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
         
         updatePickedWith(heroToUpdate.heroId, teamIds, "pickedWith");
         updatePickedWith(heroToUpdate.heroId, enemyIds, "pickedAgainst");
