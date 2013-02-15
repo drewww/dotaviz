@@ -49,15 +49,22 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         var heroToUpdate = heroes[pick.heroId];
         
         var teamIds = [];
+        var enemyIds = [];
         var startIndex;
         var stopIndex;
+        var enemyStartIndex;
+        var enemyStopIndex;
         
         if(pick.index < 5) {
           startIndex = 0;
           stopIndex = 5;
+          enemyStartIndex = 5;
+          enemyStopIndex = 10;
         } else {
           startIndex = 5;
           stopIndex = 10;
+          enemyStartIndex = 0;
+          enemyStopIndex = 5;
         }
         
         for(var i=startIndex; i<stopIndex; i++) {
@@ -65,9 +72,19 @@ fs.readFile('hero_nodes.csv', function(err, data) {
           teamIds.push(picks[i].heroId);
         }
         
+        for(var i=enemyStartIndex; i<enemyStopIndex; i++) {
+          if(i==pick.index) continue;
+          enemyIds.push(picks[i].heroId);
+        }
+        
         console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
         
         updatePickedWith(heroToUpdate.heroId, teamIds, "pickedWith");
+        updatePickedWith(heroToUpdate.heroId, enemyIds, "pickedAgainst");
+        
+        if(pick.winner) updatePickedWith(heroToUpdate.heroId, teamIds, "wonWith");
+        
+        
       });
     });
 
@@ -78,23 +95,26 @@ fs.readFile('hero_nodes.csv', function(err, data) {
     _.each(heroes, function(hero) {
       console.log("=======================");
       console.log("HERO: " + hero.heroName);
-      console.log("-------  WITH  --------")
       
-      var pickedWith = hero.pickedWith;
       
-      // ugh, so pickedWith is an object, so it's not sortable. so convert.
-      var picksList = _.map(pickedWith, function(picks, id) {
-        return {heroId:id, picks:picks};
-      });
-      
-      picksList = _.sortBy(picksList, "picks");
-      
-      for(var i=picksList.length-1; i>=0; i--) {
-        var item = picksList[i];
-        
-        console.log(item.picks + "  " + heroes[item.heroId].heroName);
-      }
-      
+      _.each(["pickedWith","wonWith","pickedAgainst", ], function(key) {
+        console.log("-------  "+key+"  --------")
+
+        var connections = hero[key];
+
+        // ugh, so pickedWith is an object, so it's not sortable. so convert.
+        var connectionsList = _.map(connections, function(picks, id) {
+          return {heroId:id, picks:picks};
+        });
+
+        connectionsList = _.sortBy(connectionsList, "picks");
+
+        for(var i=connectionsList.length-1; i>=0; i--) {
+          var item = connectionsList[i];
+
+          console.log(item.picks + "  " + heroes[item.heroId].heroName);
+        }
+      })
     });
   });
 });
