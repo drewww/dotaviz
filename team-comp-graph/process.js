@@ -34,24 +34,41 @@ fs.readFile('hero_nodes.csv', function(err, data) {
       matches[pick.matchId][pick.index] = pick;
     });
     
-    console.log(JSON.stringify(matches["117686346"]));
-  });
+    // now we get to the fun part. how much graph functionality do we need here?
+    // to start with, we want to link heroIds to lists of other heroIds they
+    // have been picked with. data structure for that will be a dict:
+    // key is heroId
+    // contains a dict that has {sameTeam:{heroId->number of coOccurences}}
+    // we'll add in other stuff later (like wins/losses, and enemies)
+    _.each(matches, function(picks) {
+      console.log("--------------------");
+      
+      console.log("picks: " + _.pluck(picks, "heroId"));
+      
+      _.each(picks, function(pick) {
+        var heroToUpdate = heroes[pick.heroId];
 
-  
-  // now we get to the fun part. how much graph functionality do we need here?
-  // to start with, we want to link heroIds to lists of other heroIds they
-  // have been picked with. data structure for that will be a dict:
-  // key is heroId
-  // contains a dict that has {sameTeam:{heroId->number of coOccurences}}
-  // we'll add in other stuff later (like wins/losses, and enemies)
-  
-  
-  // _.each(matches, function(picks) {
-  //   
-  //   _.each(picks, function(pick) {
-  //     
-  //   });
-  //   
-  //   
-  // });
+        var teamIds = [];
+        var startIndex;
+        var stopIndex;
+        if(pick.index < 5) {
+          startIndex = 0;
+          stopIndex = 5;
+        } else {
+          startIndex = 5;
+          stopIndex = 10;
+        }
+
+        for(var i=startIndex; i<stopIndex; i++) {
+          if(i==pick.index) continue;        
+          teamIds.push(picks[i].heroId);
+        }
+
+        console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
+      });
+    });
+    
+    
+    
+  });
 });
