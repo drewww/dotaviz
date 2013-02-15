@@ -77,9 +77,30 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         heroes[heroToUpdate.heroId] = heroToUpdate;
       });
     });
-    
+
+    console.log("==========================");
+    console.log("=         SUMMARY        =");
+    console.log("==========================");
+
     _.each(heroes, function(hero) {
-      console.log(JSON.stringify(hero));
+      console.log("=======================");
+      console.log("HERO: " + hero.heroName);
+      console.log("-------  WITH  --------")
+      
+      var pickedWith = hero.pickedWith;
+      
+      // ugh, so pickedWith is an object, so it's not sortable. so convert.
+      var picksList = _.map(pickedWith, function(picks, id) {
+        return {heroId:id, picks:picks};
+      });
+      
+      picksList = _.sortBy(picksList, "picks");
+      
+      for(var i=picksList.length-1; i>=0; i--) {
+        var item = picksList[i];
+        console.log(item.picks + "  " + heroes[item.heroId].heroName);
+      }
+      
     });
   });
 });
