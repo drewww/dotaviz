@@ -12,7 +12,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
   _.each(lines, function(line) {
     var pieces = line.split(",");
 
-    var entry = {heroId: parseInt(pieces[0]), heroName: pieces[1], picks: parseInt(pieces[2]), gpm: parseFloat(pieces[3]), kills: parseFloat(pieces[4]), deaths: parseFloat(pieces[5]), assists: parseFloat(pieces[6]), kda: parseFloat(pieces[7]), kd:parseFloat(pieces[8])};
+    var entry = {heroId: parseInt(pieces[0]), heroName: pieces[1], picks: parseInt(pieces[2]), gpm: parseFloat(pieces[3]), kills: parseFloat(pieces[4]), deaths: parseFloat(pieces[5]), assists: parseFloat(pieces[6]), kda: parseFloat(pieces[7]), kd:parseFloat(pieces[8]), pickedWith:{}, pickedAgainst:{}, wonWith: {}};
     heroes[entry.heroId] = entry;
   });
   
@@ -47,7 +47,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
       
       _.each(picks, function(pick) {
         var heroToUpdate = heroes[pick.heroId];
-
+        
         var teamIds = [];
         var startIndex;
         var stopIndex;
@@ -58,17 +58,28 @@ fs.readFile('hero_nodes.csv', function(err, data) {
           startIndex = 5;
           stopIndex = 10;
         }
-
+        
         for(var i=startIndex; i<stopIndex; i++) {
           if(i==pick.index) continue;        
           teamIds.push(picks[i].heroId);
         }
-
+        
         console.log("updating hero ("+pick.index+"): " + heroToUpdate.heroId + " with teammates: " + JSON.stringify(teamIds));
+        
+        _.each(teamIds, function(heroId) {
+          if(!(heroId in heroToUpdate.pickedWith)) {
+            heroToUpdate.pickedWith[heroId] = 0;
+          } 
+          
+          heroToUpdate.pickedWith[heroId] = heroToUpdate.pickedWith[heroId]+1;
+        });
+        
+        heroes[heroToUpdate.heroId] = heroToUpdate;
       });
     });
     
-    
-    
+    _.each(heroes, function(hero) {
+      console.log(JSON.stringify(hero));
+    });
   });
 });
