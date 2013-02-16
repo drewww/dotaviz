@@ -52,36 +52,52 @@ fs.readFile('hero_performance.csv', function(err, data) {
   _.each(Object.keys(heroes), function(heroName) {
     var matches = heroes[heroName];
     
-    lengths = [[[], []], [[], []], [[], []]];
+    if(heroName=="undefined") return;
+    
+    console.log(heroName);
+    // lengths = [[[], []], [[], []], [[], []]];
+    lengths = [];
+    var bucketWidth = 2.5;
+    var numBuckets = 100/bucketWidth;
+    for(var i=0; i<numBuckets; i++) {
+      lengths.push([[],[]]);
+    }
+    
+    var winLengths = [];
+    var lossLengths = [];
     
     _.each(matches, function(match) {
       var index;
-      if(match.matchLength < 25) {
-        index = 0;
-      } else if(match.matchLength < 40) {
-        index = 1;
-      } else {
-        index = 2;
-      }
+      
+      index = Math.floor(match.matchLength / bucketWidth);
       
       var won = 0;
       if(match.winner) won = 1;
       
       lengths[index][won].push(match.matchLength);
+      
+      if(won) winLengths.push(match.matchLength);
+      else lossLengths.push(match.matchLength);
+      
+    });
+    
+    // now count match lengths in each bin
+    var binTotals = [];
+    var totalMatches = 0;
+    _.each(lengths, function(bin) {
+      binTotals.push([bin[0].length, bin[1].length]);
+      totalMatches += bin[0].length + bin[1].length;
     });
     
     // now summarize into numbers.
     console.log(heroName);
-    console.log("short: " + lengths[0][1].length + "/" + (lengths[0][1].length + lengths[0][0].length) + " = " + (lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)));
-    console.log("med: " + lengths[1][1].length + "/" + (lengths[1][1].length + lengths[1][0].length) + " = " + (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)));
-    console.log("long: " + lengths[2][1].length + "/" + (lengths[2][1].length + lengths[2][0].length) + " = " + (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length)));
-    console.log("---");
+    _.each(binTotals, function(bin) {
+      renderRow(bin);
+    });
     
-    var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
+    // var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
     
-    var out = {heroName:heroName, winRates: winRates, numMatches: [(lengths[0][1].length + lengths[0][0].length), (lengths[1][1].length + lengths[1][0].length), (lengths[2][1].length + lengths[2][0].length)]};
-    
-    out.totalMatches = out.numMatches[0] + out.numMatches[1] + out.numMatches[2];
+    var out = {heroName:heroName, numMatches:binTotals, totalMatches:totalMatches, winMatchTimes:winLengths, lossMatchTimes:lossLengths};
     
     heroesOut[heroName] = out;
   });
@@ -112,5 +128,37 @@ fs.readFile('hero_performance.csv', function(err, data) {
   heroesList = _.sortBy(heroesList, "heroName");
   
   fs.writeFileSync('hero_performance.js', "var heroes = " + JSON.stringify(heroesList));
+  
+  var stream = fs.createWriteStream('distributions.csv', {flags:'w'});
+  
+  _.each(heroesList, function(hero) {
+    stream.write(hero.heroName.replace(/ /g, "_") + "_win, " + hero.winMatchTimes.join(",") + "\n");
+    stream.write(hero.heroName.replace(/ /g, "_") + "_loss, " + hero.lossMatchTimes.join(",") + "\n");
+  });
+  
+  stream.end();
 });
+
+function renderRow(bin) {
+  var wins = bin[1];
+  var losses = bin[0];
+  
+  var string = "";
+  
+  for(var i=0; i<(30-losses); i++) {
+    string += " ";
+  }
+  
+  for(var i=0; i<(losses); i++) {
+    string += "-";
+  }
+  
+  string += "|";
+  
+  for(var i=0; i<(wins); i++) {
+    string += "+";
+  }
+  
+  console.log(string);
+}
 
