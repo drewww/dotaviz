@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>The Metagame Journal &mdash; Feb 2013</title>
+	
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="http://underscorejs.org/underscore-min.js"></script>
+
+
+	<script src="hero_performance.js"></script>
+	
+	<style type="text/css" media="screen">
+		@import url(http://fonts.googleapis.com/css?family=Dosis:200,500,700|Bitter:400,700,400italic);
+
+			body {
+			  font-family: "Dosis", "Helvetica Neue", Helvetica, Arial, sans-serif;
+			  margin: 0px;
+				background-color: #eee;
+			}
+
+			#header {
+				width: 1075px;
+				margin-left: auto;
+				margin-right: auto;
+
+				background: -moz-linear-gradient(top, #345c59 0%, #1b4743 98%); /* FF3.6+ */
+				background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#345c59), color-stop(98%,#1b4743)); /* Chrome,Safari4+ */
+				background: -webkit-linear-gradient(top, #345c59 0%,#1b4743 98%); /* Chrome10+,Safari5.1+ */
+				background: -o-linear-gradient(top, #345c59 0%,#1b4743 98%); /* Opera 11.10+ */
+				background: -ms-linear-gradient(top, #345c59 0%,#1b4743 98%); /* IE10+ */
+				color: white;
+				padding-left: 15px;
+				height: 50px;
+
+				border-bottom-right-radius: 5px;
+				border-bottom-left-radius: 5px;
+			}
+
+			#intro {
+				margin-top: 105px;
+				padding-top: 10px;
+				padding-bottom: 10px;
+
+				padding-left: 150px;
+				width: 930px;
+			}
+
+			#header h1, #header h2 {
+				margin-top: 0px;
+				margin-bottom: 0px;
+
+				text-shadow: 0px 1px 0px #000000;
+			}
+
+			h1, h2, h3 {
+				font-family: 'Bitter', 'serif';
+			}
+
+			#header h1 {
+
+			}
+
+			#header h2 {
+				font-size: 0.8em;
+			}
+
+			h2 {
+				margin-top: 20px;
+				margin-bottom: 0px;
+			}
+
+			br.clear {
+				clear: both;
+			}
+
+			a {
+				color: #345c59;
+			}
+
+			.hero {
+				font-weight: bold;
+			}
+
+			.container {
+				width: 1000px;
+				margin-left: auto;
+				margin-right: auto;
+				background-color: white;
+				padding-left: 80px;
+
+				margin-top: 10px;
+			}
+
+			#charts {
+				margin-left: -80px;
+			}
+
+			#footer {
+				padding-top: 10px;
+				padding-bottom: 10px;
+				padding-left: 150px;
+				padding-right: 100px;
+				width: 830px;
+				margin-bottom: 10px;
+			}
+
+			#footer p {
+				font-size: 1.2em;
+
+				margin-top: 5px;
+				margin-bottom: 10px;
+			}
+
+			#credits {
+				font-size: 1.0em;
+				font-weight: 200;
+				margin-top: 15px;
+				padding-bottom: 10px;
+				padding-left: 70px;
+
+				float: left;
+			}
+
+			#social {
+				float: right;
+				margin-right: 70px;
+				margin-top: 15px;
+			}
+
+			#new {
+				float: right;
+				margin-right: 100px;
+				font-size: 0.8em;
+				margin-top: 15px;
+			}
+
+			#container h2 {
+				float: left;
+				margin-left: 70px;
+				margin-top: 5px;
+			}
+	</style>
+	
+	<script type="text/javascript" charset="utf-8">
+		
+		$(document).ready(function() {
+			console.log("Loading!");
+		});
+		
+	</script>
+	
+	
+</head>
+<body id="hero_pick" onload="">
+	<div id="header">
+	<h1>The Metagame Journal</h1>
+	</div>
+	
+	<div id="container" class="container">
+	<h2>Hero Win Performances</h2>
+	<div id="new"><a href="#bg" onclick="$('#background').show(300);">Not familiar with Dota?</a></div>
+	<br class="clear">
+	<div id="charts">
+	</div>
+		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewwww</a>
+		using <a href="http://d3js.org/">d3.js</a>, with data from <a href="http://datdota.com/">DatDota</a>. Code available on <a href="https://github.com/drewww/dotaviz">Github</a>.
+		</div>
+		
+		<div id="social">
+		<a href="https://twitter.com/drewwww" class="twitter-follow-button" data-show-count="false">Follow @drewwww</a>
+		
+		<a href="https://twitter.com/share" class="twitter-share-button" data-via="drewwww">Tweet</a>
+
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
+		
+		<br class="clear">
+		</div>
+	</div>
+	</div>
+	<div id="footer" class="container">
+	</div>
+</body>
