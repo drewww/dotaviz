@@ -86,6 +86,31 @@ fs.readFile('hero_performance.csv', function(err, data) {
     heroesOut[heroName] = out;
   });
   
-  fs.writeFileSync('hero_performance.js', "var heroes = " + JSON.stringify(heroesOut));
+  
+  // do some filtering. exclude any hero that doesn't have enough data.
+  // we'll do the same threshold as the other visualization: > 40 total games,
+  // plus requiring more than 4 games in category?
+  console.log("EXCLUDING");
+  heroesOut = _.filter(heroesOut, function(hero) {
+    var result = true;
+    
+    if(hero.totalMatches < 40) result = false;
+    
+    if(hero.numMatches[0] < 4 || hero.numMatches[1] < 4 || hero.numMatches[2] < 4) {
+      result = false;
+    }
+    
+    if(!result) {
+      console.log("\t" + hero.heroName + " " + JSON.stringify(hero.numMatches));
+    }
+    
+    return result;
+  });
+  
+  var heroesList = _.toArray(heroesOut);
+  
+  heroesList = _.sortBy(heroesList, "heroName");
+  
+  fs.writeFileSync('hero_performance.js', "var heroes = " + JSON.stringify(heroesList));
 });
 
