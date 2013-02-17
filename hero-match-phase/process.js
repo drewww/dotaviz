@@ -23,7 +23,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
   _.each(lines, function(line) {
     var pieces = line.split(",")
     
-    var entry = {matchId: pieces[0], index: pieces[1], gpm: parseInt(pieces[2]), heroName: pieces[3], matchLength: parseInt(pieces[4]), winner: pieces[5]=="1"};
+    var entry = {matchId: pieces[0], index: pieces[1], gpm: parseInt(pieces[2]), heroName: pieces[3], matchLength: parseInt(pieces[4]), winner: pieces[5]=="1", heroId: parseInt(pieces[6])};
     
     entries.push(entry);
     
@@ -109,7 +109,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
     
     // var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
     
-    var out = {heroName:heroName, numMatches:binTotals, totalMatches:totalMatches, winMatchTimes:winLengths, lossMatchTimes:lossLengths};
+    var out = {heroName:heroName, numMatches:binTotals, totalMatches:totalMatches, winMatchTimes:winLengths, lossMatchTimes:lossLengths, heroId:matches[0].heroId};
     
     heroesOut[heroName] = out;
   });
