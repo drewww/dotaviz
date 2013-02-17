@@ -55,21 +55,32 @@ fs.readFile('hero_performance.csv', function(err, data) {
     if(heroName=="undefined") return;
     
     console.log(heroName);
-    // lengths = [[[], []], [[], []], [[], []]];
-    lengths = [];
-    var bucketWidth = 2.5;
-    var numBuckets = 100/bucketWidth;
-    for(var i=0; i<numBuckets; i++) {
-      lengths.push([[],[]]);
-    }
+    lengths = [[[], []], [[], []], [[], []]];
+
+    // lengths = [];
+    // var bucketWidth = 2.5;
+    // var numBuckets = 100/bucketWidth;
+    // for(var i=0; i<numBuckets; i++) {
+    //   lengths.push([[],[]]);
+    // }
     
     var winLengths = [];
     var lossLengths = [];
     
+    var buckets = [30, 40];
+    
     _.each(matches, function(match) {
-      var index;
+      var index = buckets.length;
       
-      index = Math.floor(match.matchLength / bucketWidth);
+      for(var i=0; i<buckets.length; i++) {
+        
+        if(match.matchLength < buckets[i]) {
+          index = i;
+          break;
+        }
+      }
+        
+      
       
       var won = 0;
       if(match.winner) won = 1;
@@ -94,6 +105,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
     _.each(binTotals, function(bin) {
       renderRow(bin);
     });
+    
     
     // var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
     
@@ -145,7 +157,7 @@ function renderRow(bin) {
   
   var string = "";
   
-  for(var i=0; i<(30-losses); i++) {
+  for(var i=0; i<(50-losses); i++) {
     string += " ";
   }
   
