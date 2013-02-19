@@ -124,7 +124,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
     
     if(hero.totalMatches < 40) result = false;
     
-    if(hero.numMatches[0] < 4 || hero.numMatches[1] < 4 || hero.numMatches[2] < 4) {
+    if(hero.numMatches[0] < 8 || hero.numMatches[1] < 8 || hero.numMatches[2] < 8) {
       result = false;
     }
     
