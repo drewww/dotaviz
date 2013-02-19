@@ -149,6 +149,9 @@
 			stroke: black;
 		}
 	
+		text {
+			font-size: 15px;
+		}
 	</style>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -164,13 +167,13 @@
 		
 		var categories = ["short", "medium", "long"];
 		
-		margin = {top: 10, right: 30, bottom: 30, left: 30},
-		    width = 960 - margin.left - margin.right,
-		    height = 500 - margin.top - margin.bottom;
+		margin = {top: 20, right: 30, bottom: 30, left: 20},
+		    width = 1000 - margin.left - margin.right,
+		    height = 520 - margin.top - margin.bottom;
 		
 		x = d3.scale.ordinal()
 			.domain(categories)
-			.rangePoints([0, width]);
+			.rangePoints([0, 400]);
 		
 		winRateY = d3.scale.linear()
 			.domain([0, 1])
@@ -192,13 +195,35 @@
 		
 			foreground = svg.append("g")
 					.attr("class", "foreground")
+					.attr("transform", "translate(400, 0)")
 				.selectAll("path")
 					.data(heroes)
 				.enter().append("path")
 					.attr("d", path)
 					.attr("class", "hero")
 					.attr("id", function(d) { return "hero-" + d.heroId});
-				
+					
+			var heroList = svg.append("g")
+					.attr("id", "heroes-list")
+				.selectAll("g")
+					.data(heroes)
+				.enter().append("g")
+					.attr("class", "hero-name")
+					.attr("id", function(d) {
+						return "hero-list-" + d.heroId;
+					})
+					.attr("transform", function(d, i) {
+						var x = Math.floor(i/25)*120;
+						console.log("x: " + x + "; " + i);
+						
+						var y = (i%25)*20;
+						
+						return "translate("+x+", "+y+")";
+					})
+					.append("text")
+						.text(function(d) {
+							return d.heroName;
+						})
 		});
 
 		
