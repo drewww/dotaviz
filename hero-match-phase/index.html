@@ -152,6 +152,16 @@
 		text {
 			font-size: 15px;
 		}
+		
+		.hero-item.over .background {
+			fill: #ccc;
+		}
+		
+		.hero-item .background {
+			fill: white;
+		}
+		
+		
 	</style>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -208,7 +218,7 @@
 				.selectAll("g")
 					.data(heroes)
 				.enter().append("g")
-					.attr("class", "hero-name")
+					.attr("class", "hero-item")
 					.attr("id", function(d) {
 						return "hero-list-" + d.heroId;
 					})
@@ -220,6 +230,13 @@
 						
 						return "translate("+x+", "+y+")";
 					});
+			
+			heroList.append("rect")
+				.attr("x", 0)
+				.attr("y", -18)
+				.attr("width", 150)
+				.attr("height", 30)
+				.attr("class", "background")
 					
 			heroList.append("text")
 				.text(function(d) {
@@ -235,6 +252,19 @@
 				.attr("xlink:href", function(d) {
 					return "icons/" + d.iconName.replace(/ /g, "_") + "_icon.png";
 				});
+				
+			heroList.on("mouseover", function(d) {
+				var heroItem = svg.select("g#hero-list-" + d.heroId);
+				
+				heroItem.attr("class", "hero-item over");
+			});
+			
+			heroList.on("mouseout", function(d) {
+				var heroItem = svg.select("g#hero-list-" + d.heroId);
+				
+				heroItem.attr("class", "hero-item");
+			});
+			
 				
 		});
 
