@@ -195,7 +195,7 @@
 		
 			foreground = svg.append("g")
 					.attr("class", "foreground")
-					.attr("transform", "translate(400, 0)")
+					.attr("transform", "translate(450, 0)")
 				.selectAll("path")
 					.data(heroes)
 				.enter().append("path")
@@ -213,17 +213,29 @@
 						return "hero-list-" + d.heroId;
 					})
 					.attr("transform", function(d, i) {
-						var x = Math.floor(i/25)*120;
+						var x = Math.floor(i/17)*150;
 						console.log("x: " + x + "; " + i);
 						
-						var y = (i%25)*20;
+						var y = (i%17)*30;
 						
 						return "translate("+x+", "+y+")";
-					})
-					.append("text")
-						.text(function(d) {
-							return d.heroName;
-						})
+					});
+					
+			heroList.append("text")
+				.text(function(d) {
+					return d.heroName;
+				})
+				.attr("x", 30);
+						
+			heroList.append("image")
+				.attr("x", 0)
+				.attr("y", -18)
+				.attr("width", 25)
+				.attr("height", 25)
+				.attr("xlink:href", function(d) {
+					return "icons/" + d.heroName.replace(/ /g, "_") + "_icon.png";
+				});
+				
 		});
 
 		
