@@ -5,6 +5,16 @@ var entries = [];
 
 var heroes = {};
 
+var nameAdjust = {
+  "Magnataur":"Magnus",
+  "Furion":"Nature's Prophet",
+}
+
+var iconNameAdjust = {
+  "Nature's Prophet":"Nature Prophet"
+}
+
+
 // ugh this is in the std lib somewhere but fuck if I know what it is and I
 // don't want to pay for plane wifi, so lets do this!
 function mean(list) {
@@ -109,7 +119,19 @@ fs.readFile('hero_performance.csv', function(err, data) {
     
     // var winRates = [(lengths[0][1].length / (lengths[0][1].length + lengths[0][0].length)), (lengths[1][1].length / (lengths[1][1].length + lengths[1][0].length)), (lengths[2][1].length / (lengths[2][1].length + lengths[2][0].length))];
     
+    if(heroName in nameAdjust) {
+      heroName = nameAdjust[heroName];
+    }
+    
+    
     var out = {heroName:heroName, numMatches:binTotals, totalMatches:totalMatches, winMatchTimes:winLengths, lossMatchTimes:lossLengths, heroId:matches[0].heroId};
+    
+    if(heroName in iconNameAdjust) {
+      out.iconName = iconNameAdjust[heroName];
+    } else {
+      out.iconName = heroName;
+    }
+    
     
     heroesOut[heroName] = out;
   });
