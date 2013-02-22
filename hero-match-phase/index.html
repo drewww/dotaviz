@@ -238,11 +238,12 @@
 		
 			viz.append("g")
 				.attr("class", "axis x")
-				.attr("transform", "translate(0, "+height+")")
+				.attr("transform", "translate(0, "+(height+10)+")")
 				.call(xAxis);
 				
 			viz.append("g")
 				.attr("class", "axis y")
+				.attr("transform", "translate(-10, 0)")
 				.call(yAxis);
 		
 					
