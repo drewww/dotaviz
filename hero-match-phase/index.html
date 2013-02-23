@@ -178,7 +178,7 @@
 			opacity: 0.2;
 		}
 		
-		path.hero.select {
+		path.hero {
 			stroke-width: 4px;
 			color: black;
 		}
@@ -241,13 +241,6 @@
 
 			winRates = viz.append("g")
 				.attr("id", "win-rates")
-					
-			winRates.selectAll("path")
-					.data(heroes)
-				.enter().append("path")
-					.attr("d", path)
-					.attr("class", "hero")
-					.attr("id", function(d) { return "hero-" + d.heroId});
 		
 			var xAxis = d3.svg.axis()
 				  .scale(x)
@@ -268,7 +261,6 @@
 						.scale(gamesPlayedY)
 						.orient("right");
 						
-		
 			viz.append("g")
 				.attr("class", "axis x")
 				.attr("transform", "translate(0, "+(height+10)+")")
@@ -348,10 +340,39 @@
 				heroPath.attr("class", "hero select");
 				
 				setBars(d.heroId);
+				updateLine(d.heroId);
 			});
 			
 			setBars();
+			updateLine();
 		});
+
+		function updateLine(heroId) {
+			var data;
+			
+			if(_.isUndefined(heroId)) {
+				data = [[[1, 1], [1, 1], [1, 1]]];
+			} else {
+				data = _.find(heroes, function(h) {
+					return h.heroId==heroId;
+				});
+				
+				data = [data.numMatches];
+			}
+			
+			var viz = winRates.selectAll("path")
+					.data(data)
+				
+			viz.attr("class", "update")
+						.transition()
+							.duration(500)
+							.attr("d", path)
+							.attr("class", "hero")
+				
+			viz.enter().append("path")
+					.attr("d", path)
+					.attr("class", "hero")
+		}
 
 		function setBars(heroId) {
 			
@@ -362,7 +383,6 @@
 				data = [0, 0, 0, 0, 0, 0];
 			} else {
 				data = _.find(heroes, function(h) {
-					console.log(h.heroId);
 					return h.heroId==heroId;
 				});
 
@@ -370,7 +390,6 @@
 
 				data = [data[0][1], data[0][0], data[1][1], data[1][0], data[2][1], data[2][0]];
 			}
-			
 			
 			console.log(data);
 			
@@ -426,7 +445,7 @@
 				
 				var x0 = x(i);
 				var y0 = winRateY(
-					d.numMatches[i][1]/(d.numMatches[i][1]+d.numMatches[i][0])
+					d[i][1]/(d[i][1]+d[i][0])
 					)
 				return [x0, y0];
 			});
