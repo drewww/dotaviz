@@ -372,54 +372,45 @@
 			var barsContainer = bars.selectAll("rect")
 				.data(data)
 			
-			barsContainer.attr("class", "update")
-				.transition()
-					.duration(500)
-					.attr("x", function(d, i) {
-						return x(Math.floor(i/2))-15;
-					})
-					.attr("y", function(d, i) {
-						var flip = i%2!=0;
-
-						// if we're going negative, start at 0
-						if(flip) return gamesPlayedY(0);
-
-						return gamesPlayedY(d);
-					})
-					.attr("height", function(d, i) {
-						return gamesPlayedY(0) - gamesPlayedY(d);
-					})
-					.attr("class", function(d, i) {
-						if(i%2==0) {
-							return "bar win";
-						} else {
-							return "bar loss";
-						}
-					});
-			
-			barsContainer.enter().append("rect")
-				.attr("class", function(d, i) {
-					if(i%2==0) {
-						return "bar win";
-					} else {
-						return "bar loss";
-					}
-				})
-				.attr("x", function(d, i) {
+			var barX = function(d, i) {
 					return x(Math.floor(i/2))-15;
-				})
-				.attr("y", function(d, i) {
+				};
+				
+			var barY = function(d, i) {
 					var flip = i%2!=0;
 
 					// if we're going negative, start at 0
 					if(flip) return gamesPlayedY(0);
 
 					return gamesPlayedY(d);
-				})
-				.attr("width", "30px")
-				.attr("height", function(d, i) {
+				};
+			
+			var barHeight = function(d, i) {
 					return gamesPlayedY(0) - gamesPlayedY(d);
-				});
+				};
+			
+			var barClass = function(d, i) {
+					if(i%2==0) {
+						return "bar win";
+					} else {
+						return "bar loss";
+					}
+				}
+			
+			barsContainer.attr("class", "update")
+				.transition()
+					.duration(500)
+					.attr("x", barX)
+					.attr("y", barY)
+					.attr("height", barHeight)
+					.attr("class", barClass);
+			
+			barsContainer.enter().append("rect")
+				.attr("class", barClass)
+				.attr("x", barX)
+				.attr("y", barY)
+				.attr("width", "30px")
+				.attr("height", barHeight);
 		}
 		
 		function path(d) {
