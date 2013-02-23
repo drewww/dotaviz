@@ -175,19 +175,29 @@
 		
 		path.hero.fade {
 			stroke: #ddd;
+			opacity: 0.2;
 		}
 		
 		path.hero.select {
 			stroke-width: 4px;
 			color: black;
 		}
+		
+		rect.win {
+			fill: green;
+		}
+		
+		rect.loss {
+			fill: red;
+		}
+		
 	</style>
 	
 	<script type="text/javascript" charset="utf-8">
 		
 		var curHeroIndex = 0;
 		
-		var x, winRateY, svg, lines, data;
+		var x, winRateY, gamesPlayedY, svg, lines, data, viz;
 		var margin, width, height;
 		
 		console.log("Loading!");
@@ -202,10 +212,14 @@
 		
 		x = d3.scale.ordinal()
 			.domain(categories)
-			.rangePoints([0, 400]);
+			.rangePoints([50, 350]);
 		
 		winRateY = d3.scale.linear()
 			.domain([0, 1])
+			.range([height, 0]);
+			
+		gamesPlayedY = d3.scale.linear()
+			.domain([-50, 50])
 			.range([height, 0]);
 		
 		$(document).ready(function() {
@@ -218,9 +232,14 @@
 		  .append("g")
 		    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 		
-			var viz = svg.append("g")
+			viz = svg.append("g")
 					.attr("class", "foreground")
 					.attr("transform", "translate(500, 0)");
+					
+			// put the matches played bar charts in here
+			viz.selectAll("rect")
+				.data()
+					
 					
 			viz.selectAll("path")
 					.data(heroes)
@@ -233,7 +252,6 @@
 				  .scale(x)
 					.tickFormat(function(x) {
 						var map = {0:"<30m", 1:"30-40m", 2:">40m"};
-						
 						return map[x];
 					})
 				  .orient("bottom");
@@ -244,17 +262,26 @@
 						.tickFormat(function(y) {
 							return y*100 + "%";
 						})
+			
+			var winsYAxis = d3.svg.axis()
+						.scale(gamesPlayedY)
+						.orient("right");
+						
 		
 			viz.append("g")
 				.attr("class", "axis x")
 				.attr("transform", "translate(0, "+(height+10)+")")
-				.call(xAxis);
+				.call(xAxis)
 				
 			viz.append("g")
 				.attr("class", "axis y")
 				.attr("transform", "translate(-10, 0)")
 				.call(yAxis);
-		
+
+				viz.append("g")
+					.attr("class", "axis y")
+					.attr("transform", "translate(410, 0)")
+					.call(winsYAxis);
 					
 			var heroList = svg.append("g")
 					.attr("id", "heroes-list")
@@ -324,9 +351,44 @@
 				
 		});
 
+		function setBars(heroId) {
+			var data = heroes[heroId].numMatches;
+			
+			data = [data[0][0], data[0][1], data[1][0], data[1][1], data[2][0], data[2][1]];
+			
+			console.log(data);
+			
+			var bars = viz.selectAll("rect")
+				.data(data)
+			
+			bars.enter().append("rect")
+				.attr("class", function(d, i) {
+					if(i%2==0) {
+						return "bar win";
+					} else {
+						return "bar loss";
+					}
+				})
+				.attr("x", function(d, i) {
+					return x(Math.floor(i/2));
+				})
+				.attr("y", function(d, i) {
+					var flip = i%2!=0;
+					
+					// if we're going negative, start at 0
+					if(flip) return gamesPlayedY(0);
+					
+					// otherwise, we're going to go height up from 0.
+					// return gamesPlayedY(d)-gamesPlayedY(0);
+					return gamesPlayedY(0) - gamesPlayedY(d);
+				})
+				.attr("width", "30px")
+				.attr("height", function(d, i) {
+					return gamesPlayedY(d);
+				});
+		}
 		
 		function path(d) {
-			console.log(d)
 			// turns a hero entry into a path
 			
 			var foo = categories.map(function(p, i) {
