@@ -345,6 +345,8 @@
 				
 				allHeroPaths.attr("class", "hero fade");
 				heroPath.attr("class", "hero select");
+				
+				setBars(d.heroId);
 			});
 			
 			
@@ -352,7 +354,15 @@
 		});
 
 		function setBars(heroId) {
-			var data = heroes[heroId].numMatches;
+			
+			console.log("looking for heroId: " + heroId);
+			
+			var data = _.find(heroes, function(h) {
+				console.log(h.heroId);
+				return h.heroId==heroId;
+			});
+			
+			data = data.numMatches;
 			
 			data = [data[0][0], data[0][1], data[1][0], data[1][1], data[2][0], data[2][1]];
 			
