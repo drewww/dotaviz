@@ -219,7 +219,7 @@
 			.range([height, 0]);
 			
 		gamesPlayedY = d3.scale.linear()
-			.domain([-70, 70])
+			.domain([-110, 110])
 			.range([height, 0]);
 		
 		$(document).ready(function() {
@@ -350,22 +350,27 @@
 				setBars(d.heroId);
 			});
 			
-			
-				
+			setBars();
 		});
 
 		function setBars(heroId) {
 			
 			console.log("looking for heroId: " + heroId);
+			var data;
 			
-			var data = _.find(heroes, function(h) {
-				console.log(h.heroId);
-				return h.heroId==heroId;
-			});
+			if(_.isUndefined(heroId)) {
+				data = [0, 0, 0, 0, 0, 0];
+			} else {
+				data = _.find(heroes, function(h) {
+					console.log(h.heroId);
+					return h.heroId==heroId;
+				});
+
+				data = data.numMatches;
+
+				data = [data[0][1], data[0][0], data[1][1], data[1][0], data[2][1], data[2][0]];
+			}
 			
-			data = data.numMatches;
-			
-			data = [data[0][1], data[0][0], data[1][1], data[1][0], data[2][1], data[2][0]];
 			
 			console.log(data);
 			
