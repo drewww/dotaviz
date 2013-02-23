@@ -219,7 +219,7 @@
 			.range([height, 0]);
 			
 		gamesPlayedY = d3.scale.linear()
-			.domain([-50, 50])
+			.domain([-70, 70])
 			.range([height, 0]);
 		
 		$(document).ready(function() {
@@ -361,6 +361,34 @@
 			var bars = viz.selectAll("rect")
 				.data(data)
 			
+			bars.attr("class", "update")
+				.transition()
+					.duration(500)
+					.attr("x", function(d, i) {
+						return x(Math.floor(i/2))-15;
+					})
+					.attr("y", function(d, i) {
+						var flip = i%2!=0;
+
+						// if we're going negative, start at 0
+						if(flip) return gamesPlayedY(0);
+
+						// otherwise, we're going to go height up from 0.
+						// return gamesPlayedY(d)-gamesPlayedY(0);
+						return gamesPlayedY(0) - gamesPlayedY(d);
+					})
+					.attr("height", function(d, i) {
+						console.log("target height: " + gamesPlayedY(d));
+						return gamesPlayedY(d);
+					})
+					.attr("class", function(d, i) {
+						if(i%2==0) {
+							return "bar win";
+						} else {
+							return "bar loss";
+						}
+					});
+			
 			bars.enter().append("rect")
 				.attr("class", function(d, i) {
 					if(i%2==0) {
@@ -370,7 +398,7 @@
 					}
 				})
 				.attr("x", function(d, i) {
-					return x(Math.floor(i/2));
+					return x(Math.floor(i/2))-15;
 				})
 				.attr("y", function(d, i) {
 					var flip = i%2!=0;
