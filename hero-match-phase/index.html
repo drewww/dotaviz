@@ -197,7 +197,7 @@
 		
 		var curHeroIndex = 0;
 		
-		var x, winRateY, gamesPlayedY, svg, lines, data, viz;
+		var x, winRateY, gamesPlayedY, svg, data, viz, winRates, bars;
 		var margin, width, height;
 		
 		console.log("Loading!");
@@ -236,12 +236,13 @@
 					.attr("class", "foreground")
 					.attr("transform", "translate(500, 0)");
 					
-			// put the matches played bar charts in here
-			viz.selectAll("rect")
-				.data()
+			bars = viz.append("g")
+				.attr("id", "bars")
+
+			winRates = viz.append("g")
+				.attr("id", "win-rates")
 					
-					
-			viz.selectAll("path")
+			winRates.selectAll("path")
 					.data(heroes)
 				.enter().append("path")
 					.attr("d", path)
@@ -364,14 +365,14 @@
 			
 			data = data.numMatches;
 			
-			data = [data[0][0], data[0][1], data[1][0], data[1][1], data[2][0], data[2][1]];
+			data = [data[0][1], data[0][0], data[1][1], data[1][0], data[2][1], data[2][0]];
 			
 			console.log(data);
 			
-			var bars = viz.selectAll("rect")
+			var barsContainer = bars.selectAll("rect")
 				.data(data)
 			
-			bars.attr("class", "update")
+			barsContainer.attr("class", "update")
 				.transition()
 					.duration(500)
 					.attr("x", function(d, i) {
@@ -383,13 +384,10 @@
 						// if we're going negative, start at 0
 						if(flip) return gamesPlayedY(0);
 
-						// otherwise, we're going to go height up from 0.
-						// return gamesPlayedY(d)-gamesPlayedY(0);
-						return gamesPlayedY(0) - gamesPlayedY(d);
+						return gamesPlayedY(d);
 					})
 					.attr("height", function(d, i) {
-						console.log("target height: " + gamesPlayedY(d));
-						return gamesPlayedY(d);
+						return gamesPlayedY(0) - gamesPlayedY(d);
 					})
 					.attr("class", function(d, i) {
 						if(i%2==0) {
@@ -399,7 +397,7 @@
 						}
 					});
 			
-			bars.enter().append("rect")
+			barsContainer.enter().append("rect")
 				.attr("class", function(d, i) {
 					if(i%2==0) {
 						return "bar win";
@@ -412,17 +410,15 @@
 				})
 				.attr("y", function(d, i) {
 					var flip = i%2!=0;
-					
+
 					// if we're going negative, start at 0
 					if(flip) return gamesPlayedY(0);
-					
-					// otherwise, we're going to go height up from 0.
-					// return gamesPlayedY(d)-gamesPlayedY(0);
-					return gamesPlayedY(0) - gamesPlayedY(d);
+
+					return gamesPlayedY(d);
 				})
 				.attr("width", "30px")
 				.attr("height", function(d, i) {
-					return gamesPlayedY(d);
+					return gamesPlayedY(0) - gamesPlayedY(d);
 				});
 		}
 		
