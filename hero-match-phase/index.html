@@ -186,6 +186,18 @@
 			fill: #B08485;
 		}
 		
+		#hero-name {
+			font-family: 'Bitter', 'serif';
+			font-weight: bold;
+			font-size: 18px;
+			
+			color: #444;
+		}
+		
+		#hero-name.unselected {
+			fill: #aaa;
+		}
+		
 	</style>
 	
 	<script type="text/javascript" charset="utf-8">
@@ -194,6 +206,8 @@
 		
 		var x, winRateY, gamesPlayedY, svg, data, viz, winRates, bars;
 		var margin, width, height;
+		
+		var heroName;
 		
 		console.log("Loading!");
 		
@@ -230,7 +244,14 @@
 			viz = svg.append("g")
 					.attr("class", "foreground")
 					.attr("transform", "translate(530, 0)");
-					
+			
+			heroName = viz.append("text")
+				.attr("id", "hero-name")
+				.attr("class", "unselected")
+				.text("select a hero")
+				.attr("x", 10)
+				.attr("y", 10)
+			
 			bars = viz.append("g")
 				.attr("id", "bars")
 
@@ -358,10 +379,15 @@
 				
 				setBars(d.heroId);
 				updateLine(d.heroId);
+				
+				heroName.attr("class", "")
+					.text(d.heroName)
 			});
 			
 			setBars();
 			updateLine();
+			
+			
 		});
 
 		function updateLine(heroId) {
