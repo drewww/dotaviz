@@ -144,7 +144,7 @@ fs.readFile('hero_performance.csv', function(err, data) {
   heroesOut = _.filter(heroesOut, function(hero) {
     var result = true;
     
-    if(hero.totalMatches < 65) result = false;
+    if(hero.totalMatches < 95) result = false;
     
     if(hero.numMatches[0] < 8 || hero.numMatches[1] < 8 || hero.numMatches[2] < 8) {
       result = false;
