@@ -173,21 +173,55 @@
     update();
   });
 
-  function update() {
-    var nodes = data.nodes;
-
+  function update(heroId) {
+    var nodes = [];
+    
+    if(!_.isUndefined(heroId)) {
+      var hero = getHeroById(heroId);
+      
+      // nodes should only contain heroes that are frequently picked
+      // with this hero.
+      
+      nodes.push(hero);
+      
+      var connections = hero.pickedWith;
+      
+      var connectionsList = _.map(connections, function(picks, id) {
+        return {heroId:id, picks:picks};
+      });
+      
+      connectionsList = _.sortBy(connectionsList, "picks");
+      connectionsList.reverse();
+      
+      for(var i=0; i<15; i++) {
+        var connection = connectionsList[i];
+        var hero = getHeroById(connection.heroId);
+        
+        nodes.push(hero);
+      } 
+    } else {
+      nodes = data.nodes;
+    }
+    
     force.nodes(nodes)
     .start();
-
+    
     // Update the nodes…
-    node = vis.selectAll("circle.node")
-      .data(nodes)
+    node = vis.selectAll("g.hero-node")
+      .data(nodes, function(d) { return "hero-id-" + d.heroId; })
     // .style("fill", color);
-
+    
     // Enter any new nodes.
     node.enter().append("svg:g")
+      .attr("class", "hero-node")
+      .attr("id", function(d) {
+        return "hero-id-" + d.heroId;
+      })
       .attr("transform", function(d) {
         return "translate("+d.x+", "+d.y+")";
+      })
+      .on("click", function(d) {
+        update(d.heroId);
       })
       // .attr("cx", function(d) { return d.x; })
       // .attr("cy", function(d) { return d.y; })
@@ -222,6 +256,12 @@
     node.attr("transform", function(d) {
       return "translate("+d.x+", "+d.y+")";
     })
+  }
+  
+  function getHeroById(heroId) {
+    return _.find(data.nodes, function(hero) {
+      return hero.heroId == heroId;
+    });
   }
 
 
