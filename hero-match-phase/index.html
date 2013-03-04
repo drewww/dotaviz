@@ -2,7 +2,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>The Metagame Journal &mdash; Feb 2013</title>
+	<title>The Metagame Journal &mdash; Hero Match Phase Performance</title>
 	
 	<script src="http://d3js.org/d3.v3.min.js"></script>
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
@@ -36,6 +36,11 @@
 
 				border-bottom-right-radius: 5px;
 				border-bottom-left-radius: 5px;
+			}
+			
+			h1 a {
+				color: white;
+				text-decoration: none;
 			}
 
 			#intro {
@@ -519,7 +524,7 @@
 </head>
 <body id="hero_pick" onload="">
 	<div id="header">
-	<h1>The Metagame Journal</h1>
+	<h1><a href="http://metagamejournal.com/">The Metagame Journal</a></h1>
 	</div>
 	
 	<div id="container" class="container">
@@ -553,7 +558,7 @@
 	<p>The bars in each time period represent the absolute number of games won/lost. This is useful to get a sense of how frequently the hero is picked as well as to see if teams that pick carries manage to push games longer, to the point where their carries are more likely to be successful.</p>
 	
 	<h2>Results</h2>
-	<p>It's quite difficult to isolate the impact of one hero on a game that has ten heroes involved. The team compositions in play usually both have early and late-game oriented heroes, and the way players use the heroes has more of an impact than simply the selection of the hero itself. Nevertheless, we can see some trends that make intuitive sense. <span class="hero">Batrider</span>,  <span class="hero">Templar Assasin</span>, and <span class="hero">Wisp</span> dominate the early game. <span class="hero">Sven</span>, <span class="hero">Shadow Fiend</span>, and <span class="hero">Faceless Void</span> do well in long games. But there are lots of surprises too. Why is <span class="hero">Phantom Lancer</span> so much stronger in mid-length games and has a poor win rate in long games? Why is <span class="hero">Shadow Demon</span> so bad in short games?</p>
+	<p>It's quite difficult to isolate the impact of one hero on a game that has ten heroes involved. The team compositions in play usually both have early and late-game oriented heroes, and the way players use the heroes has more of an impact than simply the selection of the hero itself. Nevertheless, we can see some trends that make intuitive sense. <span class="hero">Batrider</span>,  <span class="hero">Templar Assassin</span>, and <span class="hero">Wisp</span> dominate the early game. <span class="hero">Sven</span>, <span class="hero">Shadow Fiend</span>, and <span class="hero">Faceless Void</span> do well in long games. But there are lots of surprises too. Why is <span class="hero">Phantom Lancer</span> so much stronger in mid-length games and has a poor win rate in long games? Why is <span class="hero">Shadow Demon</span> so bad in short games?</p>
 		
 	<h2>Where is my favorite hero?</h2>
 	<p>This data is pulled from professional games only, from the <a href="http://datdota.com/">datdota.com database</a>, and filters out heroes without enough games played in each match duration. A future version of this visualization might draw data from non-professional games. If you're interested in helping to pull that together - let me know!</p>
