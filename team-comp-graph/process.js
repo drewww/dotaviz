@@ -90,9 +90,6 @@ fs.readFile('hero_nodes.csv', function(err, data) {
     
     var out = {"nodes":[], "edges":[]};
     
-    
-    
-    
     console.log("==========================");
     console.log("=         SUMMARY        =");
     console.log("==========================");
@@ -124,7 +121,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
     });
     
     // write it out to disk
-    fs.writeFileSync("teamcomp.json", JSON.stringify(out));
+    fs.writeFileSync("teamcomp.js", "var data = " + JSON.stringify(out));
     
   });
 });
