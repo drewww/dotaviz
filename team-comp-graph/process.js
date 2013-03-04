@@ -87,7 +87,12 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         
       });
     });
-
+    
+    var out = {"nodes":[], "edges":[]};
+    
+    
+    
+    
     console.log("==========================");
     console.log("=         SUMMARY        =");
     console.log("==========================");
@@ -96,6 +101,7 @@ fs.readFile('hero_nodes.csv', function(err, data) {
       console.log("=======================");
       console.log("HERO: " + hero.heroName);
       
+      out.nodes.push(hero);
       
       _.each(["pickedWith","wonWith","pickedAgainst", ], function(key) {
         console.log("-------  "+key+"  --------")
@@ -116,6 +122,10 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         }
       })
     });
+    
+    // write it out to disk
+    fs.writeFileSync("teamcomp.json", JSON.stringify(out));
+    
   });
 });
 
