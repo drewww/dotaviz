@@ -5,6 +5,20 @@ var fs = require('fs')
 
 // select herodisp.hero_num, hero_name, count(*) as picks, sum(gpm)/count(*) as gpm, sum(kills)/count(*) as kills, sum(deaths)/count(*) as deaths, sum(assists)/count(*) as assists, (sum(kills)+sum(assists))/sum(deaths) as kda, (sum(kills)/sum(deaths)) as kd
 
+var nameAdjust = {
+  "Magnataur":"Magnus",
+  "Furion":"Nature's Prophet",
+  "Lycan":"Lycanthrope",
+  "Outworld Destroyer":"Outworld Demolisher",
+  "Omni Knight":"Omniknight",
+  "Doom Bringer":"Doom"
+}
+
+var iconNameAdjust = {
+  "Nature's Prophet":"Nature Prophet"
+}
+
+
 var heroes = {}
 fs.readFile('hero_nodes.csv', function(err, data) {
   lines = data.toString("ascii").split("\n");
@@ -97,6 +111,16 @@ fs.readFile('hero_nodes.csv', function(err, data) {
     _.each(heroes, function(hero) {
       console.log("=======================");
       console.log("HERO: " + hero.heroName);
+      
+      if(hero.heroName in nameAdjust) {
+        hero.heroName = nameAdjust[hero.heroName];
+      }
+
+      if(hero.heroName in iconNameAdjust) {
+        hero.iconName = iconNameAdjust[hero.heroName];
+      } else {
+        hero.iconName = hero.heroName;
+      }
       
       out.nodes.push(hero);
       
