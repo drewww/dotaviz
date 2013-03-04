@@ -122,7 +122,10 @@ fs.readFile('hero_nodes.csv', function(err, data) {
         hero.iconName = hero.heroName;
       }
       
-      out.nodes.push(hero);
+      
+      if(hero.heroName!==undefined) {
+        out.nodes.push(hero);
+      }
       
       _.each(["pickedWith","wonWith","pickedAgainst", ], function(key) {
         console.log("-------  "+key+"  --------")
