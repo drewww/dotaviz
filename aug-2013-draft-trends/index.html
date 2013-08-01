@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<title>The Metagame Journal &mdash; Feb 2013</title>
+	
+	<script src="http://d3js.org/d3.v3.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.0/jquery.min.js"></script>
+	<script src="http://underscorejs.org/underscore-min.js"></script>
+	
+	<style type="text/css" media="screen">
+	
+	@import url(http://fonts.googleapis.com/css?family=Dosis:200,500,700|Bitter:400,700,400italic);
+	
+		body {
+		  font-family: "Dosis", "Helvetica Neue", Helvetica, Arial, sans-serif;
+		  margin: 0px;
+			background-color: #eee;
+		}
+		
+		#header {
+			width: 1075px;
+			margin-left: auto;
+			margin-right: auto;
+			
+			background: -moz-linear-gradient(top, #345c59 0%, #1b4743 98%); /* FF3.6+ */
+			background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#345c59), color-stop(98%,#1b4743)); /* Chrome,Safari4+ */
+			background: -webkit-linear-gradient(top, #345c59 0%,#1b4743 98%); /* Chrome10+,Safari5.1+ */
+			background: -o-linear-gradient(top, #345c59 0%,#1b4743 98%); /* Opera 11.10+ */
+			background: -ms-linear-gradient(top, #345c59 0%,#1b4743 98%); /* IE10+ */
+			color: white;
+/*			padding: 10px;*/
+			
+/*			box-shadow: 2px 0px 2px 2px #999;*/
+			
+/*			z-index: 10;
+			
+			position: absolute;
+			top: 0px;
+*/			
+			padding-left: 15px;
+			height: 50px;
+			
+			border-bottom-right-radius: 5px;
+			border-bottom-left-radius: 5px;
+		}
+		
+		h1 a {
+			color: white;
+			text-decoration: none;
+		}
+		
+
+		#intro {
+			margin-top: 105px;
+			padding-top: 10px;
+			padding-bottom: 10px;
+			
+			padding-left: 150px;
+			width: 930px;
+		}
+		
+		#header h1, #header h2 {
+			margin-top: 0px;
+			margin-bottom: 0px;
+			
+			text-shadow: 0px 1px 0px #000000;
+		}
+		
+		h1, h2, h3 {
+			font-family: 'Bitter', 'serif';
+		}
+		
+		#header h1 {
+
+		}
+		
+		#header h2 {
+			font-size: 0.8em;
+		}
+		
+		h2 {
+			margin-top: 20px;
+			margin-bottom: 0px;
+		}
+		
+		br.clear {
+			clear: both;
+		}
+		
+		a {
+			color: #345c59;
+		}
+		
+		.hero {
+			font-weight: bold;
+		}
+		
+		text {
+		  font: 12px "Dosis";
+			color: white;
+		}
+
+		text.selected {
+			font-weight: bold;
+		}
+
+		
+		.axis path,
+		.axis line {
+		  fill: none;
+		  stroke: #000;
+		  shape-rendering: crispEdges;
+		}
+		
+		.axis path {
+			opacity: 0;
+		}
+		
+		.y .tick {
+			stroke: #555;
+			opacity: 0.4;
+		  shape-rendering: crispEdges;
+		}
+		
+		.tick.major line {
+			stroke: #ccc;
+		}
+		
+		.line {
+			fill: #345c59;
+			stroke-width: 1px;
+		}
+
+		.container {
+			width: 1000px;
+			margin-left: auto;
+			margin-right: auto;
+			background-color: white;
+			padding-left: 80px;
+			
+			margin-top: 10px;
+		}
+		
+		#charts {
+			margin-left: -80px;
+		}
+		
+		#footer {
+			padding-top: 10px;
+			padding-bottom: 10px;
+			padding-left: 150px;
+			padding-right: 100px;
+			width: 830px;
+			margin-bottom: 10px;
+		}
+		
+		#footer p {
+			font-size: 1.2em;
+			
+			margin-top: 5px;
+			margin-bottom: 10px;
+		}
+		
+		#credits {
+			font-size: 1.0em;
+			font-weight: 200;
+			margin-top: 15px;
+			padding-bottom: 10px;
+			padding-left: 70px;
+			
+			float: left;
+		}
+		
+		#other-heroes {
+			width: 850px;
+			margin-left: 150px;
+			font-size: 0.7em;
+			color: #aaa;
+			
+			height: 0px;
+			opacity: 0;
+		}
+		
+		#versions line {
+			stroke: #345c59;
+			stroke-width: 2px;
+			opacity: 0.5;
+		}
+		
+		#social {
+			float: right;
+			margin-right: 70px;
+			margin-top: 15px;
+		}
+		
+		#new {
+			float: right;
+			margin-right: 100px;
+			font-size: 0.8em;
+			margin-top: 15px;
+		}
+		
+		#container h2 {
+			float: left;
+			margin-left: 70px;
+			margin-top: 5px;
+		}
+		
+	</style>
+	
+	<!-- Data is here. -->
+	<script type="text/javascript" src="hero_picks.js"></script>
+	<script type="text/javascript" src="yearweeks.js"></script>
+	
+	<!-- rendering is here. -->
+	<script type="text/javascript" charset="utf-8">
+	
+		var margin = {top: 0, right: 190, bottom: 0, left: 150};
+		var globalWidth = 980;
+	
+		var numWeeks = 21;
+		
+		var matchFrequencyHeight = 100;
+		
+		var showNormalized = true;
+		
+		var adjust = {
+			"Shadow Demon":-2,
+			"Keeper of the Light":-1,
+			"Sand King":-1,
+			"Nyx Assassin":-3,
+			"Night Stalker":-7,
+			"Puck":1,
+			"Gyrocopter":-1,
+			"Templar Assassin":-2,
+			"Chaos Knight":-2,
+			"P. Lancer":1
+		};
+		
+		$("document").ready(function() {
+			$('#background').hide();
+			
+			generateNormalizedStack();
+			generateMatchHistogram();
+		});
+		
+		function generateMatchHistogram() {
+			
+			margin.bottom = 40;
+			margin.top = 0;
+			
+			// hell if I know why this isn't lining up but HACK TIME
+			var histogramWidth = globalWidth - margin.left - margin.right + 35,
+			    histogramHeight = 70 - margin.top - margin.bottom;
+			
+			var maxPicks = d3.max(yearweeks, function(d) {return d.totalPicks/10});
+			
+			var svg = d3.select("#charts").append("svg")
+				.attr("width", histogramWidth + margin.left + margin.right)
+				.attr("height", histogramHeight + margin.top + margin.bottom)
+			.append("g")
+			 .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+			
+			// not sure why I need this adjustment factor either but SCREW IT
+			var x = d3.scale.ordinal()
+				.rangeBands([0, histogramWidth+195], 0)
+				.domain(_.pluck(yearweeks, "yearWeek"));
+			
+			var y = d3.scale.linear()
+				.domain([0, maxPicks])
+				.range([histogramHeight, 0]);
+			
+			var counter = 0;
+			
+			var xAxis = d3.svg.axis()
+				.scale(x)
+				.tickFormat(function(d) {
+					d = d + "";
+					var year = parseInt(d.substring(0, 4));
+					var week = parseInt(d.substring(4, 6));
+					
+					if(counter==0) {
+						counter++;
+						return "Sep, " + year;
+					} else if(week==1) {
+						counter++;
+						return "Jan, " + year;
+					}
+					
+					counter++;
+					
+					return "";
+				})
+				.orient("bottom");
+			
+			var yAxis = d3.svg.axis()
+				.scale(y)
+				.ticks(3)
+				.tickSize(-histogramWidth-155)
+				.orient("left");
+
+			var area = d3.svg.area()
+						.x(function(d) {return x(d.yearWeek);})
+						.y0(histogramHeight)
+						.y1(function(d) {return y(d.totalPicks/10)});
+			
+			svg.append("path")
+						.datum(yearweeks)
+						.attr("class", "line")
+						.attr("d", area);
+						
+						svg.append("g")
+							.attr("class", "y axis")
+							.call(yAxis);
+							svg.append("g")
+								.attr("class", "x axis")
+								.attr("transform", "translate(-20,"+histogramHeight + ")")
+								.call(xAxis);
+
+				svg.append("text")
+				    .attr("class", "y label")
+				    .attr("text-anchor", "end")
+						.style("font-size", "1.0em")
+				    .attr("y", 50)
+						.attr("x", 500)
+				    .attr("dy", ".75em")
+				    .text("matches per week");
+			
+		}
+		
+		function generateNormalizedStack() {
+			
+			// erg this is bad to have here but...
+			margin.top = 20;
+			margin.bottom = 0;
+			
+			var width = globalWidth - margin.left - margin.right;
+			var height = 600 - margin.top - margin.bottom;
+			
+			var gpmRangeColors = ["#4B7A45", "#efe"];
+			
+			var svg = d3.select("#charts").append("svg")
+					.attr("width", 1100)
+					.attr("height", height + margin.top + margin.bottom)
+					.append("g")
+				 	.attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+				
+				var x = d3.scale.linear()
+				    .domain([0, numWeeks - 2])
+				    .range([0, globalWidth - margin.right]);
+
+				var y = d3.scale.linear()
+				    .domain([0, 1])
+				    .range([height, 0]);
+
+				var color = d3.scale.linear()
+				    .range(gpmRangeColors);
+						
+				var area = d3.svg.area()
+				    .x(function(d) { return x(d.x); })
+				    .y0(function(d) { return y(d.y0); })
+				    .y1(function(d) { return y(d.y0 + d.y); });
+				
+				// TODO convert this to d3 max/min finding
+				// beware, these numbers aren't actually GPM values, they're
+				// the sum of total GPM across all games.
+				var gpmRange = [1000, 0];
+				_.each(heroes, function(hero) {
+					if(hero.gpm < gpmRange[0]) gpmRange[0] = hero.gpm;
+					if(hero.gpm > gpmRange[1]) gpmRange[1] = hero.gpm;
+				});
+				
+				// console.log("gpmRange: " + JSON.stringify(gpmRange));
+				
+			var stack = d3.layout.stack()
+				.offset("expand")
+				.order(function(data) {
+					return d3.range(data.length);
+				})
+				.values(function(d) { return d.values;});
+			
+			var togglePlacement = 0;
+			
+			var layers = stack(heroes);
+			_.each(heroes, function(hero) {
+				var peakWidth = 0;
+				var index = 0;
+				var justSetPeakWidth = false;
+				_.each(hero.values, function(value) {
+					
+					
+					// this is a weird exception for morphling, where he goes to zero
+					// the week after his peak, which ruins the algorithm. Shift his
+					// peak week back a bit. But make sure you don't do this for heroes
+					// on the left edge. 
+					if(justSetPeakWidth) {
+						
+						if(value.y==0 && index>1) {
+							hero.peakWeek = hero.peakWeek-1;
+						}
+						
+						justSetPeakWidth = false;
+					}
+					
+					if(value.y > peakWidth) {
+						hero.peakWeek = index;
+						hero.peakWidth = value.y;
+						hero.peakWeekFixed = true;
+						peakWidth = value.y;
+						
+						// do a check to see if the next width is zero
+						justSetPeakWidth = true;
+					}
+					
+					index++;
+				});
+				
+				
+				if(hero.peakWidth < 0.020) {
+					hero.peakWeek = togglePlacement;
+					
+					if(togglePlacement==0) {
+						togglePlacement = yearweeks.length;
+					}
+				}
+			});
+			
+			var defs = svg.append("svg:defs");
+			
+			var gradient = defs.append("svg:linearGradient")
+					.attr("id", "gradient")
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "0%")
+					.attr("y2", "100%")
+					.attr("spreadMethod", "pad");
+			gradient.append("svg:stop")
+				.attr("offset", "0%")
+				.attr("stop-color", gpmRangeColors[1])
+				.attr("stop-opacity", 1);
+
+				gradient.append("svg:stop")
+					.attr("offset", "100%")
+					.attr("stop-color", gpmRangeColors[0])
+					.attr("stop-opacity", 1);
+
+			var hashGradient = defs.append("svg:linearGradient")
+					.attr("id", "hash")
+					.attr("x1", "0%")
+					.attr("y1", "0%")
+					.attr("x2", "0%")
+					.attr("y2", "140%")
+					.attr("spreadMethod", "pad")
+					.attr("gradientTransform", "rotate(-50)");
+					
+			var hashColors = ["#9abb97", "#7ca277"];
+			var toggle = 0;
+			for(var i=0; i<20; i++) {
+				hashGradient.append("svg:stop")
+					.attr("offset", (i*5) + "%")
+					.attr("stop-color", hashColors[toggle])
+					.attr("stop-opacity", 1);
+				hashGradient.append("svg:stop")
+						.attr("offset", ((i+1)*5) + "%")
+						.attr("stop-color", hashColors[toggle])
+						.attr("stop-opacity", 1);
+				if(toggle==0) {
+					toggle=1;
+				} else {
+					toggle=0;
+				}
+			}
+
+			var gpmLegend = svg.append("g");
+			
+					gpmLegend.attr("class", "legend")
+						.append("rect")
+							.attr("x", -80)
+							.attr("y", 0)
+							.attr("width", 20)
+							.attr("height", 100)
+							.attr("fill", "url(#gradient)");
+							
+					
+					// assuming that GPM is always 3 digits here, which is (for now)
+					// a safe bet. highest average we see in pro games is 500. Not sure
+					// you can go much lower than 100 credibly. 
+					gpmLegend.append("text")
+							.attr("x", -82)
+							.attr("y", 8)
+							.attr("text-anchor", "end")
+							.text((gpmRange[1]+"").slice(0, 3) + " GPM");
+							
+					gpmLegend.append("text")
+							.attr("x", -82)
+							.attr("y", 100)
+							.attr("text-anchor", "end")
+							.text((gpmRange[0]+"").slice(0, 3) + " GPM")
+			
+			
+			var colorHero = function(d) {
+				
+				if("isOtherHero" in d) {
+					return "url(#hash)";
+				}
+				
+				// normalize based on what GPMs we see in the data
+				return color((d.gpm-gpmRange[0])/gpmRange[1]);
+			}
+			
+			var mouseoverHero = function(id) {
+				var path = svg.select("path#hero-" + id);
+				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
+				
+				path.style("opacity", "0.5");
+				
+				var text = svg.select("text#label-" + id);
+				text.attr("class", "hero-name selected")
+				
+				if(_.isUndefined(id)) {
+					// we're over the "others" row
+					// animate in the extra info div.
+					
+					$("#other-heroes").show();
+					$("#other-heroes").animate({opacity:1, height: "50px"}, 200);
+					
+				}
+			}
+			
+			var mouseoutHero = function(id) {
+				var path = svg.select("path#hero-" + id);
+				
+				var d = _.find(heroes, function(hero) { return hero.heroId==id;});
+				
+				// path.style("fill", colorHero(d));
+				path.style("opacity", "1");
+
+				var text = svg.select("text#label-" + id);
+				text.attr("class", "hero-name");
+				
+				if(_.isUndefined(id)) {
+					// we're over the "others" row
+					// animate in the extra info div.
+					$("#other-heroes").animate({opacity:0, height: "0px"},200, "swing", 
+					function(){
+						$(this).hide();
+					});
+				}
+				
+			}
+			
+			var path = svg.append("g")
+					.attr("class", "paths")
+					.selectAll("path")
+						.data(layers)
+					.enter().append("path")
+						.attr("d", function(d) { return area(d.values)})
+						.attr("id", function(d) {
+							return "hero-" + d.heroId;
+						})
+						.style("fill", colorHero)
+						.on("mouseover", function(d) {
+							mouseoverHero(d.heroId);
+						})
+						.on("mouseout", function(d) {
+							mouseoutHero(d.heroId);
+						})
+						.append("svg:title")
+							.text(function(d) {
+								return d.heroName;
+							});
+			
+			
+			var textY = function(d) {
+					
+					if(d.heroName in adjust) {
+						d.peakWeek = d.peakWeek + adjust[d.heroName];
+					}
+					
+					var points = getPathPointsForWeek(d.heroId, d.peakWeek);
+					
+					var width =  points[1].y - points[0].y;
+					
+					// get the position of the upper line (extract from the raw
+					// path listing, shifted by one because the first seg is
+					// always an absolute move command) and then add on half
+					// the width of the bar at that point.
+					return points[0].y + width/2 + 3;
+			}
+			
+			// add the version markers as vertical bars
+			versionData = [{"x":3, "label":"6.75"}, {"x":5, "label":"6.76"}, {"x":13, "label":"6.77"}];
+			
+			var versionGroup = svg.append("g")
+				.attr("id", "versions");
+			
+			var versions = versionGroup.selectAll("g")
+				.data(versionData)
+				.enter().append("g")
+					.attr("class", "version")
+					.attr("transform", function(version) {
+						return "translate(" + x(version.x) + ", 0)";
+					});
+					
+			versions.append("a")
+					.attr("xlink:href", function(version) {
+						return "http://www.playdota.com/changelogs/" + version.label;
+					})
+					.attr("target", "_blank")
+				.append("text")
+						.attr("x", 0)
+						.attr("y", -3)
+						.text(function(version) {
+							return version.label;
+						});
+
+			versions.append("line")
+						.attr("x1", 0)
+						.attr("y1", 0)
+						.attr("x2", 0)
+						.attr("y2", height);
+			
+			
+			var text = svg.append("g")
+					.attr("class", "hero-name")
+					.selectAll("text")
+						.data(layers)
+					.enter().append("text")
+							.attr("id", function(d) {
+								return "label-"+d.heroId;
+							})
+							.attr("y", textY)
+							.attr("x", function(d) {
+								if(d.peakWeek>20) return x(20);
+								return x(d.peakWeek);
+							})
+							.on("mouseover", function(d) {
+								mouseoverHero(d.heroId);
+							})
+							.on("mouseout", function(d) {
+								mouseoutHero(d.heroId);
+							})
+							.attr("text-anchor", function(d) {
+								if(d.peakWeek==0) {
+									return "end";
+								} else if (d.peakWeek>=(numWeeks-3)) {
+									return "start";
+								} else {
+									return "start";
+								}
+							})
+							.attr("transform", function(d) {
+								// check to see if the peak week is at the start or end of the
+								// set.
+								// console.log(d.peakWeek);
+								if(d.peakWeek==0) {
+									return "";
+								} else if (d.peakWeek>=(numWeeks-2)) {
+									return "";
+								} else {
+									var firstPoints = getPathPointsForWeek(d.heroId, d.peakWeek);
+									var secondPoints = getPathPointsForWeek(d.heroId, d.peakWeek+1);
+								
+									var centerPointsY = [(firstPoints[0].y + firstPoints[1].y)/2,
+									(secondPoints[0].y + secondPoints[1].y)/2];
+								
+									var angle = Math.atan((centerPointsY[1] - centerPointsY[0])/ (secondPoints[0].x - firstPoints[0].x))/Math.PI*180;
+								
+									return "rotate(" +angle+ " " + x(d.peakWeek) +","+textY(d) + ")";
+								}
+							})
+						  .text(function(d) { return d.heroName; });
+						
+						// populate the #other-heroes div with a list of other hero picks.
+						var otherHeroesInfo = heroes[0];
+						
+						// console.log(JSON.stringify(heroes[0]));
+						var otherHeroesInfoDiv = $("<div id='other-heroes'></div>");
+						otherHeroesInfoDiv.text(otherHeroesInfo.names.join(", "));
+						
+						$("#charts").append(otherHeroesInfoDiv);
+						
+						otherHeroesInfoDiv.hide();
+		}
+		
+		function getPathPointsForWeek(heroId, week) {
+			// okay shit is going to get real here.
+			// pull the path object from SVG
+			var path = document.getElementById("hero-" + heroId);
+			
+			// now get the points
+			var segs = path.pathSegList;
+			
+			if(week>20) {
+				week = 20;
+			}
+			
+			var upperPoint = segs.getItem(week);
+			// lower point will be the only other one with the same x
+			var lowerPoint;
+			
+			// start at one beyond the upper point's index
+			for(var i=week+1; i<segs.numberOfItems; i++) {
+				if(segs.getItem(i).x==upperPoint.x) {
+					lowerPoint = segs.getItem(i);
+					break;
+				}
+			}
+			
+			return [upperPoint, lowerPoint];
+		}
+	</script>
+</head>
+<body id="hero_pick" onload="">
+	<div id="header">
+	<h1><a href="http://metagamejournal.com">The Metagame Journal</a></h1>
+	</div>
+	
+	<div id="container" class="container">
+	<h2>Dota 2 Drafting Analysis, February 2013</h2>
+	<div id="new"><a href="#bg" onclick="$('#background').show(300);">Not familiar with Dota?</a></div>
+	<br class="clear">
+	<div id="charts">
+	</div>
+		<div id="credits">Designed by <a href="http://twitter.com/drewwww">@drewww</a>
+		using <a href="http://d3js.org/">d3.js</a>, with data from <a href="http://datdota.com/">DatDota</a>. Code available on <a href="https://github.com/drewww/dotaviz">Github</a>.
+		</div>
+		
+		<div id="social">
+		<a href="https://twitter.com/drewwww" class="twitter-follow-button" data-show-count="false">Follow @drewwww</a>
+		
+		<a href="https://twitter.com/share" class="twitter-share-button" data-via="drewwww">Tweet</a>
+
+		<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="http://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");</script>
+		</div>
+		
+		<br class="clear">
+		</div>
+	</div>
+	</div>
+	<div id="footer" class="container">
+		<div id="background">
+		<h2>Welcome to Dota</h2>
+		<a id="bg"></a>
+		<p>Dota 2 is a competitive multiplayer game, played in two teams of five. At the start of each game, each player selects a specific hero to control during the game, drawing from a pool of nearly 100 available heroes. Each hero has a set of skills that cause it to specialize in certain sorts of roles within the game, much like players on a football team have skills and physical characteristics that make them appropriate for specific positions on a team. At the start of each game, teams draft heroes in much the same way sports teams draft players each season. The teams take turn picking heroes from the available pool, until each team has selected five heroes to control for the duration of the match. Once picked, a hero is removed from the pool, denying it for the other team. The drafting process also involves "bans", where a team can remove heroes from the pool entirely, so neither team can pick them. This process takes a few minutes at the start of every match. Matches last around 35 minutes on average.<p>
+			<p>This drafting process is itself a highly competitive and intellectual activity. A team generally needs to have heroes that fill certain roles, in the same way a baseball team needs to have a pitcher and a catcher. Just like a pitcher might be a specialist in a particular pitch, heroes satisfy their roles in different ways. Unlike most traditional sports, these roles are not nearly as set in stone, and teams will often pick heroes that focus their team's strengths in certain ways. Much like a football team might focus on a rushing game or a passing game, Dota team compositions will frequently focus on particular strategies. The drafting process slowly reveals these strategies, and teams try to hide their intentions as long as possible, lest the other team draft a perfect counter to their strategy. This process sets the stage for the match, and teams frequently manage to build major advantages before play even begins, just by their drafting prowess.</p>
+		</div>
+		
+		<h2>Introduction</h2>
+		<p>Every fan of professional Dota (and Dota-like games like <i>League of Legends</i>) has a sense that certain team compositions and particular heroes rise and fall in popularity over time. This happens for a variety of reasons: a style of play for which that hero is well suited can experience a surge in popularity, a player might develop a new way of fitting a hero into a team composition creating new opportunities for its use, or a player might demonstrate the power of a previously overlooked hero. Conversely, heroes fall out of favor because strong counters to them become better understood. </p>
+
+		<p>Historically, there have been few attempts to capture these trends in a holistic way. Snapshots of trends in a particular tournament are common, but the macro-level trends can be difficult to get a handle on. This visualization aims to demonstrate some of these trends and allow for richer conversations about the past, present, and future of drafting trends in competitive Dota matches.<p>
+		<h2>The Visualization</h2>
+<p>In this visualization, each slice represents the relative popularity of a hero during each week; the wider the band, the more frequently is was picked in that week. The width of each slice is normalized against total games played (i.e. total number of opportunities for a hero to be picked) such that thickness represents (more or less) the odds that a hero appeared in a game during that week. Only the frequently picked heroes are assigned slices at all. Lower frequency picks are aggregated into the last slice.<p>
+		
+		<h2>The Data</h2>
+		<p>The visualization is based on data drawn from <a href="http://datdota.com">datdota.com</a>'s database of professional games. The major limit is that full drafting data including bans is not available for older games. This visualization covers the post-TI2 era, and ban data is not reliably available over the whole period covered. This is absolutely a distortion and moving forward I will update this visualization with full pick and ban data.<p>
+		
+		<h2>GPM and Roles</h2>
+		<p>Heroes are ordered by their average recorded GPMs in professional games. This is an unusual metric to sort by, but I find it reveals some interesting patterns. First, it naturally groups heroes into roles. One of the struggles with doing analysis on Dota heroes is the extent to which they defy clear classification into roles. Many heroes can be played in different modes, even at the professional level. "Support" and "carry" are relatively clear buckets, but everything else is a bit murky.</p>
+		
+		<p>This visualization draws inspiration from the 1-5 ranking system, in which a player in the 1 role gets the most access to farm and the player in the 5 role gets the least. This continuum much more closely matches the reality. If we rank heroes by their average farm rates they fall out into those tiers naturally. The serious fan should be unsurprised to see heroes like <span class="hero">Crystal Maiden</span> or <span class="hero">Shadow Demon</span> at the bottom and <span class="hero">Phantom Lancer</span>, <span class="hero">Anti-Mage</span>, and <span class="hero">Tiny</span> at the top. Between those extremes we find heroes that tend to be played in the middle lane (<span class="hero">Templar Assassin</span>, <span class="hero">Tinker</span>, <span class="hero">Queen of Pain</span>), followed by semi-carries and junglers like <span class="hero">Leshrac</span>, <span class="hero">Enigma</span>, <span class="hero">Undying</span>, or <span class="hero">Chen</span>.</p>
+		
+		<p>One of the interesting trends this organization reveals is the increasing popularity of farm-heavy heroes. If we look at the relative popularity of the lightest color slices in the chart (like <span class="hero">Phantom Lancer</span>, <span class="hero">Tiny</span>, and <span class="hero">Luna</span>) we can their slow but significant growth over this period. While <span class="hero">Morphling</span> was the king of carries at TI2, he has basically disappeared post 6.75 and teams are opting for even more farm dependent carries than ever before. <b>The farming era of Dota is coming back, even with the increased ganking rewards in recent updates.</b><p>
+			
+			<h2>Questions?</h2>
+			<p>Got comments, questions, or suggestions? Please feel free to <a href="mailto:drew.harry@gmail.com">email me</a>. I'll update this page as appropriate with clarifications and improvements.
+	</div>
+	
+</body>
+<script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-38456110-1']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+</html>
