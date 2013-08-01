@@ -83,7 +83,7 @@ fs.readFile('hero_bans.csv', function(err, data) {
     // okay, now we go through each entry. check and see if that hero name
     // is a key in heroes yet. if it is, add it to values. if not, create
     // a new hero.
-    if(parseInt(entry.yearweek) < 201238 || parseInt(entry.yearweek) > 201305) {
+    if(parseInt(entry.yearweek) < 201250 || parseInt(entry.yearweek) > 201401) {
       return;
     }
     
