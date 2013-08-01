@@ -1,5 +1,5 @@
 var fs = require('fs')
-    _ = require('underscore')._;
+_ = require('underscore')._;
 
 var data = [];
 var lines = [];
@@ -22,7 +22,26 @@ function zeros(l) {
   return array;
 }
 
-fs.readFile('hero_picks.csv', function(err, data) {
+fs.readFile('hero_bans.csv', function(err, data) {
+
+  lines = data.toString("ascii").split("\n");
+
+  // we'll do this one based on yearweeks for easy subsequent lookup
+  var bans = {};
+
+  _.each(lines, function(line) {
+    var pieces = line.split(",");
+
+    var entry = {"heroId":pieces[0], "heroName":pieces[1], "bans":pieces[2], "yearweek":pieces[3]};
+
+    if (!(entry.yearweek in bans)) {
+      bans[entry.yearweek] = {}
+    }
+
+    bans[entry.yearweek][entry.heroId] = entry;
+  });
+
+  fs.readFile('hero_picks.csv', function(err, data) {
   // first parse things into sensible objects.
   lines = data.toString("ascii").split("\n");
   
@@ -30,7 +49,7 @@ fs.readFile('hero_picks.csv', function(err, data) {
     var pieces = line.split(",");
     
     var entry = {"heroId":pieces[0], "heroName":pieces[1], "picks":pieces[2],
-      "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8]), "month":parseInt(pieces[9]), "year":parseInt(pieces[10]), "monthname":pieces[11]};
+    "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8]), "month":parseInt(pieces[9]), "year":parseInt(pieces[10]), "monthname":pieces[11]};
     
     entries.push(entry);
     
@@ -121,56 +140,59 @@ fs.readFile('hero_picks.csv', function(err, data) {
       heroes[entry.heroName] = heroObj;
     }
   });
-  
-  yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek});
-  
-  
-  var heroesArray = [];
-  
-  var otherHero = {names:[], values:zeros(numYearweeks), heroesPicked:{}, isOtherHero:true, "peakWeek":0, "heroName":"Other Heroes"};
-  
-  
-  _.each(heroes, function(value, key) {
-    if(value.totalPicks > 40) {
-      
-      value.gpm = value.gpm / value.totalPicks;
-      value.kills = value.kills / value.totalPicks;
-      value.deaths = value.deaths / value.totalPicks;
-      value.assists = value.assists / value.totalPicks;
-      
-      heroesArray.push(value);
-    } else {
-      otherHero.names.push(value.heroName + " ("+value.totalPicks+")");
-      
-      var i=0;
-      _.each(value.values, function(picks) {
-        otherHero.values[i].y += picks.y;
-        i++;
-      });
-    }
-  });
-  
-  otherHero.names = _.sortBy(otherHero.names, function(item) {
-    var parenLoc = item.indexOf("(");
+
+yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek});
+
+
+var heroesArray = [];
+
+var otherHero = {names:[], values:zeros(numYearweeks), heroesPicked:{}, isOtherHero:true, "peakWeek":0, "heroName":"Other Heroes"};
+
+
+_.each(heroes, function(value, key) {
+  if(value.totalPicks > 40) {
+
+    value.gpm = value.gpm / value.totalPicks;
+    value.kills = value.kills / value.totalPicks;
+    value.deaths = value.deaths / value.totalPicks;
+    value.assists = value.assists / value.totalPicks;
+
+    heroesArray.push(value);
+  } else {
+    otherHero.names.push(value.heroName + " ("+value.totalPicks+")");
+
+    var i=0;
+    _.each(value.values, function(picks) {
+      otherHero.values[i].y += picks.y;
+      i++;
+    });
+  }
+});
+
+otherHero.names = _.sortBy(otherHero.names, function(item) {
+  var parenLoc = item.indexOf("(");
     var substring = item.substring(parenLoc+1, item.length-1);
     return parseInt(substring)*-1;
   });
-  
-  console.log(JSON.stringify(otherHero));
-  
-  heroesArray = _.sortBy(heroesArray, "gpm");
-  
-  otherHero.heroName = "Other Heroes ("+otherHero.names.length+")";
-  
-  
-  heroesArray.unshift(otherHero);
-  
-  
-  fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray) + "; var others = " + JSON.stringify(otherHero));
-  
-  fs.writeFileSync('yearweeks.js', "var yearweeks = " + JSON.stringify(yearWeekMetadata));
-  
+
+console.log(JSON.stringify(otherHero));
+
+heroesArray = _.sortBy(heroesArray, "gpm");
+
+otherHero.heroName = "Other Heroes ("+otherHero.names.length+")";
+
+
+heroesArray.unshift(otherHero);
+
+
+fs.writeFileSync('hero_picks.js', "var heroes = " + JSON.stringify(heroesArray) + "; var others = " + JSON.stringify(otherHero));
+
+fs.writeFileSync('yearweeks.js', "var yearweeks = " + JSON.stringify(yearWeekMetadata));
+
 });
+
+})
+
 
 
 
