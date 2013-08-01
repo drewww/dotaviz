@@ -50,13 +50,28 @@ fs.readFile('hero_bans.csv', function(err, data) {
     
     var entry = {"heroId":pieces[0], "heroName":pieces[1], "picks":pieces[2],
     "yearweek":pieces[3], "gpm":parseInt(pieces[4]), "role":pieces[5], "kills":parseInt(pieces[6]), "deaths":parseInt(pieces[7]), "assists":parseInt(pieces[8]), "month":parseInt(pieces[9]), "year":parseInt(pieces[10]), "monthname":pieces[11]};
+
+    // lets also look into the bans list to see if there are bans for this hero in this yearweek.
+    if(entry.yearweek in bans) {
+      // almost certainly true every time
+      var bansThisYearweek = bans[entry.yearweek];
+
+      if(entry.heroId in bansThisYearweek) {
+        entry.bans = bansThisYearweek[entry.heroId].bans;
+      } else {
+        entry.bans = 0;
+      }
+    }
     
+    console.log(entry);
+
     entries.push(entry);
     
     // this will collide a bunch, but then the number of keys will tell us
     // how many unique yearweeks there are
     yearweeks[entry.yearweek] = true;
   });
+  return;
   
   console.log("yearweeks: " + Object.keys(yearweeks).length);
   console.log("yearweeks: " + JSON.stringify(Object.keys(yearweeks)));
