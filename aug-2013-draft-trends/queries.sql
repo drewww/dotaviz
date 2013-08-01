@@ -55,6 +55,14 @@ select mymatch.id as matchid, herodisp.hero_num, hero_name, yearweek(date) as ye
 -- now group by date
 select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek, sum(gpm) as gpm, role, sum(kills), sum(deaths), sum(assists), month(date) as month, year(date) as year, monthname(date) as monthname into outfile '/tmp/hero_picks.csv' FIELDS TERMINATED BY ','LINES TERMINATED BY '\n' from bs_info join herodisp on bs_info.hero_num = herodisp.hero_num join mymatch on mymatch.id=bs_info.id join basic_stats2 on basic_stats2.id=bs_info.id and basic_stats2.index=bs_info.index group by hero_num, yearweek order by yearweek asc, picks desc;
 
+-- we want to bring in bans, too. first attempt: just reuse the primary query, but change the target.
+select herodisp.hero_num, hero_name, count(*) as picks, yearweek(date) as yearweek, role, month(date) as month, year(date) as year, monthname(date) as monthname into outfile '/tmp/hero_picks.csv' FIELDS TERMINATED BY ','LINES TERMINATED BY '\n' from drafts join herodisp on drafts.hero_num = herodisp.hero_num join mymatch on mymatch.id=drafts.id join basic_stats2 on basic_stats2.id=drafts.id and basic_stats2.index=bs_info.index group by hero_num, yearweek order by yearweek asc, picks desc;
+
+
+
+-- actual optimal strategy will be to move the whole query over to drafts table instead of basic_stats2?
+
+
 -- the above query only has listings for heroes that were picked in that 
 -- week, so there are no 0s in the data. We need precisely the same
 -- number of data points per hero, so we need a complete list 
