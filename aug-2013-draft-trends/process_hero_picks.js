@@ -11,6 +11,7 @@ var heroes = {};
 var yearWeekMetadata = [];
 
 var totalPicksInYearWeek = 0;
+var totalBansInYearWeek = 0;
 
 function zeros(l) {
   var array = [];
@@ -62,16 +63,12 @@ fs.readFile('hero_bans.csv', function(err, data) {
         entry.bans = 0;
       }
     }
-    
-    console.log(entry);
-
     entries.push(entry);
     
     // this will collide a bunch, but then the number of keys will tell us
     // how many unique yearweeks there are
     yearweeks[entry.yearweek] = true;
   });
-  return;
   
   console.log("yearweeks: " + Object.keys(yearweeks).length);
   console.log("yearweeks: " + JSON.stringify(Object.keys(yearweeks)));
@@ -118,24 +115,33 @@ fs.readFile('hero_bans.csv', function(err, data) {
         yearWeekMetadata.push({"totalPicks":totalPicksInYearWeek, "yearWeek":curYearweek, "year":entry.year, "month":entry.month, "label":label});
         
         totalPicksInYearWeek = 0;
+        totalBansInYearWeek = 0;
         yearweekIndex++;
         curYearweek = entry.yearweek;
         
         console.log("new yearweek: " + entry.yearweek);
       }
     }
-    
-    
+
+    if(!("bans" in entry)) {
+      entry.bans = 0;
+    }
+  
+    // these should nominally be the same. Just a sanity check.    
     totalPicksInYearWeek += parseInt(entry.picks);
-    
+    totalBansInYearWeek += parseInt(entry.bans);
+
     if(entry.heroName in heroes) {
-      // update
+      // every subsequent instance of the hero
       var heroObj = heroes[entry.heroName];
       
-      heroObj.values[yearweekIndex].y = parseInt(entry.picks);
+      heroObj.values[yearweekIndex].y = parseInt(entry.picks) + parseInt(entry.bans);
+
       heroes[entry.heroName].totalPicks = heroes[entry.heroName].totalPicks
-      + parseInt(entry.picks);
-      
+        + parseInt(entry.picks);
+      heroes[entry.heroName].totalBans = heroes[entry.heroName].totalBans
+        + parseInt(entry.bans);
+
       heroes[entry.heroName].gpm = heroes[entry.heroName].gpm + entry.gpm;
       heroes[entry.heroName].kills = heroes[entry.heroName].kills + entry.kills;
       heroes[entry.heroName].deaths = heroes[entry.heroName].deaths + entry.deaths;
@@ -146,11 +152,18 @@ fs.readFile('hero_bans.csv', function(err, data) {
         heroObj.maxPicks = parseInt(entry.picks);
         heroObj.peakWeek = yearweekIndex;
       }
-      
+
+      if(parseInt(entry.bans) > heroObj.maxBans) {
+        heroObj.maxBans = parseInt(entry.bans);
+        heroObj.peakBanWeek = yearweekIndex;
+      }
     } else {
-      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks), "gpm":0, "kills":0, "deaths":0, "assists":0, "maxPicks":parseInt(entry.picks), "peakWeek":yearweekIndex};
+      // first instance of the hero
+      var heroObj = {"heroName":entry.heroName, "heroId":entry.heroId, "values":zeros(numYearweeks), "totalPicks":parseInt(entry.picks), "gpm":0, "kills":0, "deaths":0, "assists":0, "maxPicks":parseInt(entry.picks), "peakWeek":yearweekIndex, "maxBans":parseInt(entry.bans), "totalBans":parseInt(entry.bans)};
       
-      heroObj.values[yearweekIndex].y = parseInt(entry.picks);
+      heroObj.values[yearweekIndex].y = parseInt(entry.picks) + parseInt(entry.bans);
+
+      console.log(entry.picks + " + " + entry.bans + " = " + heroObj.values[yearweekIndex].y);
       
       heroes[entry.heroName] = heroObj;
     }
